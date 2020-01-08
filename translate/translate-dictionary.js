@@ -8,13 +8,7 @@
 // @include      https://*/*
 // @include      file:///*
 // @run-at       document-start
-// @connect      youdao.com
-// @connect      iciba.com
-// @connect      translate.google.cn
 // @connect      hjenglish.com
-// @connect      bing.com
-// @connect      chinacloudapi.cn
-// @connect      cambridge.org
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
 
@@ -23,13 +17,7 @@
 
     // Your code here...
     /**联网权限*/
-    // @connect      youdao.com             有道词典
-    // @connect      iciba.com              金山词霸
-    // @connect      translate.google.cn    谷歌翻译
     // @connect      hjenglish.com          沪江小D
-    // @connect      bing.com               必应词典
-    // @connect      chinacloudapi.cn       必应词典-发音
-    // @connect      cambridge.org          剑桥高阶
     /**样式*/
     var style = document.createElement('style');
     // >>>>> 可以自定义的变量
@@ -59,31 +47,11 @@
     tr-audio{display:block;margin-bottom:5px}
     tr-audio a{margin-right:1em;font-size:80%}
     tr-audio a:last-of-type{margin-right:auto}
-    tr-content{display:none;width:${trContentWidth}px;height:${trContentHeight}px;overflow-x:hidden;overflow-y:scroll;background:white;padding:2px 8px;margin-top:5px;box-sizing:content-box;font-family:"Helvetica Neue","Helvetica","Arial","sans-serif";font-size:${fontSize}px;font-weight:normal;line-height:normal;-webkit-font-smoothing:auto;font-smoothing:auto;text-rendering:auto}
+    tr-content{display:none;width:${trContentWidth}px;height:auto;overflow-x:hidden;overflow-y:scroll;background:white;padding:2px 8px;margin-top:5px;box-sizing:content-box;font-family:"Helvetica Neue","Helvetica","Arial","sans-serif";font-size:${fontSize}px;font-weight:normal;line-height:normal;-webkit-font-smoothing:auto;font-smoothing:auto;text-rendering:auto}
     tr-engine~tr-engine{margin-top:1em}
     tr-engine .title{color:#00c;display:inline-block;font-weight:bold}
     tr-engine .title:hover{text-decoration:none}
     /*各引擎样式*/
-    .google .sentences,.google .trans,.google .orig,.google .dict,.google .pos,.none{display:block}
-    .google .backend,.google .entry,.google .base_form,.google .pos_enum,.google .src,.google .confidence,.google .ld_result,.google .translation_engine_debug_info,.none{display:none}
-    .google .orig{color:#777}
-    .google .pos{margin-top:1em}
-    .google .pos:before{content:"<"}
-    .google .pos:after{content:">"}
-    .google .terms:before{content:"〔"}
-    .google .terms:after{content:"〕"}
-    .google .terms{margin-right:.2em}
-    .youdao .pron{margin-right:1em}
-    .youdao .phone{color:#777;margin-right:1em}
-    .youdao .phone:before{content:"["}
-    .youdao .phone:after{content:"]"}
-    .youdao .pos:before{content:"<"}
-    .youdao .pos:after{content:">"}
-    .youdao .phrs{display:none}
-    .youdao .trs>.tr>.exam{display:none}
-    .youdao .trs>.tr>.l{display:block;margin-left:1em}
-    .youdao [class="#text"]{font-style:italic}
-    .youdao .return-phrase,.youdao [class="@action"],.none{display:none}
     .hjenglish dl,.hjenglish dt,.hjenglish dd,.hjenglish p,.hjenglish ul,.hjenglish li,.hjenglish h3{margin:0;padding:0;margin-block-start:0;margin-block-end:0;margin-inline-start:0;margin-inline-end:0}
     .hjenglish h3{font-size:1em;font-weight:normal}
     .hjenglish .detail-pron,.hjenglish .pronounces{color:#777}
@@ -94,40 +62,7 @@
     .hjenglish ol,.hjenglish ul{list-style:none}
     .hjenglish dd{margin-left:1em}
     .hjenglish dd>p{margin-left:2.5em}
-    .bing h1,.bing strong{font-size:1em;font-weight:normal;margin:0;padding:0}
-    .bing .concise ul{list-style:none;margin:0;padding:0}
-    .bing .hd_tf{margin-right:1em}
-    .bing .concise .pos{margin-right:.2em}
-    .bing .concise .web{margin-right:auto}
-    .bing .concise .web:after{content:"："}
-    .bing .oald{margin-top:.4em}
-    .bing .hd_tf_lh div{display:inline;color:#777}
-    .bing #authid td:first-child{width:22px;margin:0;padding:0}
-    .bing .def_row{vertical-align:top}
-    .bing .bil_dis,.bing .val_dis{padding-right:.25em}
-    .bing .li_exs{display:none}
-    .bing .li_id{border:0;padding:.2em}
-    .bing .infor,.bing .sen_com,.bing .com_sep,.bing .bil,.bing .gra{padding-right:.25em}
-    .bing .infor,.bing .label{padding-left:.25em}
-    .bing .each_seg+.each_seg{margin-top:.5em}
-    .bing .de_co div{display:inline}
-    .bing .idm_seg,.bing .li_ids_co{margin-left:1em}
-    .bing .sim{display:inline}
-    .cambridge .entry~.entry{margin-top:1em}
-    .cambridge p,.cambridge h2,.cambridge h3{padding:0;margin:0}
-    .cambridge h2,.cambridge h3{font-size:1em;font-weight:normal}
-    .cambridge .headword .hw{display:block}
-    .cambridge .pron{color:#777;margin-right:1em}
-    .cambridge b.def{font-weight:normal}
-    .cambridge .epp-xref{border:1px solid #777;border-radius:.5em;padding:0 2px;font-size:80%}
-    .cambridge .examp,.cambridge .extraexamps,.cambridge .cols,.cambridge .xref,.cambridge .fcdo,.cambridge div[fallback],.cambridge .i-volume-up,.cambridge .daccord{display:none}
-    .cambridge .entry-body__el+.entry-body__el{margin-top:1em}
-    .cambridge .pos-body{margin-left:1em}
-    .iciba strong{font-size:1em;font-weight:normal}
-    .iciba p{padding:0;margin:0}
-    .iciba .icIBahyI-footer,.iciba .icIBahyI-suggest{display:none}
-    .iciba .icIBahyI-prons{color:#777}
-    .iciba .icIBahyI-eg{margin-right:1em}
+    .hjenglish .pronounces .word-audio {margin-left:2.5em}
     `;
     // iframe 工具库
     var iframe = document.createElement('iframe');
@@ -151,116 +86,36 @@
     var engineResult = {}; // id: DOM 
     // 唯一 ID
     var ids = {
-        ICIBA: 'iciba',
-        ICIBA_LOWER_CASE: 'icibaLowerCase',
-        YOUDAO: 'youdao',
-        YOUDAO_LOWER_CASE: 'youdaoLowerCase',
-        BING: 'bing',
         HJENGLISH: 'hjenglish',
-        GOOGLE: 'google',
-        CAMBRIDGE: 'cambridge'
     };
     // 唯一 ID 扩展
     var idsExtension = {
         // ID 组
-        LIST_DICT: [ids.ICIBA, ids.YOUDAO, ids.BING, ids.HJENGLISH, ids.CAMBRIDGE],
-        LIST_DICT_LOWER_CASE: [ids.ICIBA, ids.ICIBA_LOWER_CASE, ids.YOUDAO, ids.YOUDAO_LOWER_CASE, ids.BING, ids.HJENGLISH, ids.CAMBRIDGE],
-        LIST_GOOGLE: [ids.GOOGLE],
+        LIST_DICT: [ids.HJENGLISH,],
+        LIST_DICT_LOWER_CASE: [ids.HJENGLISH,],
         // 去重比对（大小写翻译可能一样）
         lowerCaseMap: (function () {
             var obj = {};
-            obj[ids.ICIBA_LOWER_CASE] = ids.ICIBA;
-            obj[ids.YOUDAO_LOWER_CASE] = ids.YOUDAO;
             return obj;
         })(),
         // 标题
         names: (function () {
             var obj = {};
-            obj[ids.ICIBA] = '金山词霸';
-            obj[ids.ICIBA_LOWER_CASE] = '';
-            obj[ids.YOUDAO] = '有道词典';
-            obj[ids.YOUDAO_LOWER_CASE] = '';
-            obj[ids.BING] = 'Bing 词典';
             obj[ids.HJENGLISH] = '沪江小D';
-            obj[ids.GOOGLE] = '谷歌翻译';
-            obj[ids.CAMBRIDGE] = '剑桥高阶';
             return obj;
         })(),
         // 跳转到网站（“%q%”占位符或者 function text -> return URL）
         links: (function () {
             var obj = {};
-            obj[ids.ICIBA] = 'http://www.iciba.com/%q%';
-            obj[ids.ICIBA_LOWER_CASE] = '';
-            obj[ids.YOUDAO] = 'https://dict.youdao.com/w/eng/%q%';
-            obj[ids.YOUDAO_LOWER_CASE] = '';
-            obj[ids.BING] = 'https://cn.bing.com/dict/search?q=%q%';
-            obj[ids.HJENGLISH] = 'https://dict.hjenglish.com/w/%q%';
-            obj[ids.GOOGLE] = function (text) {
-                var rst = '';
-                if (hasChineseByRange(text)) {
-                    rst = 'https://translate.google.cn/#view=home&op=translate&sl=auto&tl=en&text=' + encodeURIComponent(text);
-                } else {
-                    rst = 'https://translate.google.cn/#view=home&op=translate&sl=auto&tl=zh-CN&text=' + encodeURIComponent(text);
-                }
-                return rst;
-            };
-            obj[ids.CAMBRIDGE] = 'https://dictionary.cambridge.org/search/english-chinese-simplified/direct/?q=%q%';
+            obj[ids.HJENGLISH] = 'https://dict.hjenglish.com/jp/jc/%q%';
             return obj;
         })(),
         // 翻译引擎
         engines: (function () {
             var obj = {};
-            obj[ids.ICIBA] = function (text, time) {
-                ajax('http://open.iciba.com/huaci_v3/dict.php?word=' + encodeURIComponent(text), function (rst) {
-                    putEngineResult(ids.ICIBA, parseIciba(rst), time);
-                    showContent();
-                }, function (rst) {
-                    putEngineResult(ids.ICIBA, htmlToDom('error: 无法连接翻译服务'), time);
-                    showContent();
-                });
-            };
-            obj[ids.ICIBA_LOWER_CASE] = function (text, time) {
-                ajax('http://open.iciba.com/huaci_v3/dict.php?word=' + encodeURIComponent(text.toLowerCase()), function (rst) {
-                    putEngineResult(ids.ICIBA_LOWER_CASE, parseIciba(rst), time);
-                    showContent();
-                }, function (rst) {
-                    putEngineResult(ids.ICIBA_LOWER_CASE, htmlToDom('error: 无法连接翻译服务'), time);
-                    showContent();
-                });
-            };
-            obj[ids.YOUDAO] = function (text, time) {
-                ajax('https://dict.youdao.com/jsonapi?xmlVersion=5.1&jsonversion=2&q=' + encodeURIComponent(text), function (rst) {
-                    putEngineResult(ids.YOUDAO, parseYoudao(rst), time)
-                    showContent();
-                }, function (rst) {
-                    putEngineResult(ids.YOUDAO, htmlToDom('error: 无法连接翻译服务'), time);
-                    showContent();
-                });
-            };
-            obj[ids.YOUDAO_LOWER_CASE] = function (text, time) {
-                ajax('https://dict.youdao.com/jsonapi?xmlVersion=5.1&jsonversion=2&q=' + encodeURIComponent(text.toLowerCase()), function (rst) {
-                    putEngineResult(ids.YOUDAO_LOWER_CASE, parseYoudao(rst), time);
-                    showContent();
-                }, function (rst) {
-                    putEngineResult(ids.YOUDAO_LOWER_CASE, htmlToDom('error: 无法连接翻译服务'), time)
-                    showContent();
-                });
-            };
-            obj[ids.BING] = function (text, time) {
-                ajax('https://cn.bing.com/dict/search?q=' + encodeURIComponent(text), function (rst) {
-                    putEngineResult(ids.BING, parseBing(rst), time);
-                    showContent();
-                }, function (rst) {
-                    putEngineResult(ids.BING, htmlToDom('error: 无法连接翻译服务'), time);
-                    showContent();
-                }, {
-                    headers: {
-                        'Cookie': 'ENSEARCH=BENVER=0;' // 中文结果
-                    }
-                });
-            };
+
             obj[ids.HJENGLISH] = function (text, time) {
-                ajax('https://dict.hjenglish.com/w/' + encodeURIComponent(text), function (rst) {
+                ajax('https://dict.hjenglish.com/jp/jc/' + encodeURIComponent(text), function (rst) {
                     putEngineResult(ids.HJENGLISH, parseHjenglish(rst), time);
                     showContent();
                 }, function (rst) {
@@ -273,59 +128,22 @@
                     }
                 });
             };
-            obj[ids.GOOGLE] = function (text, time) {
-                var url = 'https://translate.google.cn/translate_a/single?client=gtx&dt=t&dt=bd&dj=1&source=input&hl=zh-CN&sl=auto';
-                url += '&tk=' + token(text);
-                if (hasChineseByRange(text)) {
-                    url += '&tl=en&q=' + encodeURIComponent(text);
-                } else {
-                    url += '&tl=zh-CN&q=' + encodeURIComponent(text);
-                }
-                ajax(url, function (rst) {
-                    putEngineResult(ids.GOOGLE, parseGoogle(rst), time);
-                    showContent();
-                }, function (rst) {
-                    putEngineResult(ids.GOOGLE, htmlToDom('error: 无法连接翻译服务'), time);
-                    showContent();
-                });
-            };
-            obj[ids.CAMBRIDGE] = function (text, time) {
-                var url = 'https://dictionary.cambridge.org/dictionary/english-chinese-simplified/' + encodeURIComponent(text);
-                ajax(url, function (rst) {
-                    putEngineResult(ids.CAMBRIDGE, parseCambridge(rst), time);
-                    showContent();
-                }, function (rst) {
-                    putEngineResult(ids.CAMBRIDGE, htmlToDom('error: 无法连接翻译服务'), time);
-                    showContent();
-                });
-            };
+
             return obj;
         })()
-    }
+    };
     // 绑定图标拖动事件
     var iconDrag = new Drag(icon);
     // 图标数组
     var iconArray = [{
         name: '多词典查询',
         id: 'icon-dict',
-        image: 'data:image/png;base64,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',
+        image: 'data:image/png;base64,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',
         trigger: function (text, time) {
             idsType = idsExtension.LIST_DICT;
             if (text != text.toLowerCase()) {
                 idsType = idsExtension.LIST_DICT_LOWER_CASE; // 改为大小写 ID 组（大小写各请求一次）
             }
-            idsType.forEach(function (id) {
-                idsExtension.engines[id](text, time);
-            });
-            initContent(); // 初始化翻译面板
-            displayContent(); // 立马显示翻译面板
-        }
-    }, {
-        name: '谷歌翻译',
-        id: 'icon-google',
-        image: 'data:image/png;base64,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',
-        trigger: function (text, time) {
-            idsType = idsExtension.LIST_GOOGLE;
             idsType.forEach(function (id) {
                 idsExtension.engines[id](text, time);
             });
@@ -383,7 +201,7 @@
     // 鼠标事件：防止选中的文本消失
     document.addEventListener('mousedown', function (e) {
         log('mousedown event:', e);
-        if (e.target == icon || (e.target.parentNode && e.target.parentNode == icon)) { // 点击了翻译图标
+        if (e.target === icon || (e.target.parentNode && e.target.parentNode === icon)) { // 点击了翻译图标
             e.preventDefault();
         }
     });
@@ -465,8 +283,8 @@
     }
     /**是否拖动图标*/
     function isDrag() {
-        return iconDrag.elementOriginalLeft != parseInt(icon.style.left) ||
-            iconDrag.elementOriginalTop != parseInt(icon.style.top);
+        return iconDrag.elementOriginalLeft !== parseInt(icon.style.left) ||
+            iconDrag.elementOriginalTop !== parseInt(icon.style.top);
     }
     /**强制结束拖动*/
     function forceStopDrag() {
@@ -512,7 +330,7 @@
             }
             xml += obj[prop] instanceof iframeWin.Array ? '' : '</' + prop + '>';
         }
-        var xml = xml.replace(/<\/?[0-9]{1,}>/g, '');
+        xml = xml.replace(/<\/?[0-9]{1,}>/g, '');
         return xml
     }
     /**xml 转 html*/
@@ -601,19 +419,7 @@
     /**初始化面板*/
     function initContent() {
         contentList.innerHTML = ''; // 清空翻译内容列表
-        // 发音
-        var audio = document.createElement('tr-audio');
-        audio.appendChild(getPlayButton({
-            name: 'US',
-            url: 'https://dict.youdao.com/dictvoice?audio=' + selected + '&type=2'
-        }));
-        audio.appendChild(getPlayButton({
-            name: 'UK',
-            url: 'https://dict.youdao.com/dictvoice?audio=' + selected + '&type=1'
-        }));
-        if (engineId != 'icon-google') { // 谷歌翻译不显示发音图标
-            contentList.appendChild(audio);
-        }
+
         // 初始化翻译引擎结构（此时内容暂未填充）
         idsType.forEach(function (id) {
             if (id in idsExtension.names) {
@@ -792,7 +598,7 @@
         }
         selected = window.getSelection().toString().trim(); // 当前选中文本
         log('selected:' + selected + ', icon display:' + icon.style.display);
-        if (selected && icon.style.display != 'block' && pageX && pageY) { // 显示翻译图标
+        if (selected && icon.style.display !== 'block' && /[\u30a1-\u30f6\u3041-\u3093\uFF00-\uFFFF\u4e00-\u9fa5]/.test(selected) && pageX && pageY) { // 显示翻译图标
             log('show icon');
             icon.style.top = pageY + offsetY + 'px';
             icon.style.left = pageX + offsetX + 'px';
@@ -857,142 +663,14 @@
         });
         return type;
     }
-    /**有道词典排版*/
-    function parseYoudao(rst) {
-        var html = '';
-        try {
-            var rstJson = iframeWin.JSON.parse(rst),
-                phoneStyle = 'color:#777;';
-            if (rstJson.ec) {
-                var word = rstJson.ec.word[0],
-                    tr = '';
-                var trs = word.trs,
-                    ukphone = word.ukphone,
-                    usphone = word.usphone,
-                    phone = word.phone,
-                    returnPhrase = word['return-phrase'];
-                if (returnPhrase && returnPhrase.l && returnPhrase.l.i) {
-                    html += '<div>' + returnPhrase.l.i + '</div>';
-                }
-                html += '<div>';
-                if (ukphone && ukphone.length != 0) {
-                    html += '<span class="pron" style="' + phoneStyle + '">英 [' + ukphone + '] </span>';
-                }
-                if (usphone && usphone.length != 0) {
-                    html += '<span class="pron" style="' + phoneStyle + '">美 [' + usphone + '] </span>';
-                }
-                html += '</div>';
-                if (phone && phone.length != 0) {
-                    html += '<div class="pron" style="' + phoneStyle + '">[' + phone + '] </div>';
-                }
-                trs.forEach(element => {
-                    tr += '<div>' + element.tr[0].l.i[0] + '</div>';
-                });
-                html += tr;
-            }
-            // 网络释义
-            if (rstJson.web_trans &&
-                rstJson.web_trans['web-translation'] &&
-                rstJson.web_trans['web-translation'].length > 0 &&
-                rstJson.web_trans['web-translation'][0]['@same'] &&
-                rstJson.web_trans['web-translation'][0]['@same'] == 'true' &&
-                rstJson.web_trans['web-translation'][0].trans &&
-                rstJson.web_trans['web-translation'][0].trans.length > 0) {
-                var webTrans = '网络：';
-                rstJson.web_trans['web-translation'][0].trans.forEach(function (obj, i) {
-                    if (obj.value) {
-                        if (obj.cls && obj.cls.cl && obj.cls.cl.length > 0) {
-                            obj.cls.cl.forEach(function (cl) {
-                                webTrans += '[' + cl + ']';
-                            });
-                        }
-                        webTrans += obj.value;
-                        if (rstJson.web_trans['web-translation'][0].trans.length - 1 != i) {
-                            webTrans += '；';
-                        }
-                    }
-                });
-                html += '<div>' + webTrans + '</div>';
-            }
-            // 中英翻译
-            if (rstJson.ce_new && rstJson.ce_new.word) {
-                html += '<div>' +
-                    '《新汉英大辞典》<br>' + xmlToHtml(objToXml(rstJson.ce_new.word), 'div') +
-                    '</div>';
-            }
-            // 中文翻译
-            if (rstJson.hh && rstJson.hh.word) {
-                html += '<div>' +
-                    '《现代汉语大词典》<br>' + xmlToHtml(objToXml(rstJson.hh.word), 'span') +
-                    '</div>';
-            }
-            // 长句翻译
-            if (rstJson.fanyi && rstJson.fanyi.tran) {
-                html += rstJson.fanyi.tran;
-            }
-        } catch (error) {
-            log(error);
-            html += error;
-        }
-        var dom = document.createElement('div');
-        dom.setAttribute('class', ids.YOUDAO);
-        dom.innerHTML = html;
-        return dom;
-    }
-    /**金山词霸排版*/
-    function parseIciba(rst) {
-        var dom = document.createElement('div');
-        dom.setAttribute('class', ids.ICIBA);
-        try {
-            rst = rst.replace(/\n/g, ' ');
-            rst = /dict.innerHTML='(.*)';    \tdict.style.display = "block";/g.exec(rst)[1];
-            rst = rst
-                .replace(/\\"/g, '"')
-                .replace(/\\'/g, '\'') // inner-city 这个词会多一个斜杠，金山词霸的数据有些许瑕疵
-                .replace(/onclick=/g, 'data-onclick=');
-            rst = cleanAttr(rst, 'style');
-            // 标识符处理
-            var symbolRegex = /(<span class="icIBahyI-fl">.*?(?: xml:lang=).*?<\/span>)/ig;
-            var symbolMatch;
-            var symbolResult = [];
-            while ((symbolMatch = symbolRegex.exec(rst)) != null) {
-                symbolResult.push(symbolMatch[1]);
-            }
-            symbolResult.forEach(function (str) {
-                rst = rst.replace(str,
-                    str.replace(/\[英\]/g, '英')
-                    .replace(/\[美\]/g, '美')
-                );
-            });
-            rst = cleanHtml(rst)
-                .replace(/(?:a>)/ig, 'span>')
-                .replace(/(?:<a)/ig, '<span');
-            var doc = htmlToDom(rst);
-            // 发音
-            doc.querySelectorAll('[title="真人发音"],[title="机器发音"]').forEach(function (ele) {
-                var str = ele.getAttribute('data-onclick');
-                var regex = /'(http:\/\/.*?)'/ig;
-                var match = regex.exec(str);
-                if (match && match.length >= 1) {
-                    ele.appendChild(getPlayButton({
-                        name: '♫',
-                        url: match[1]
-                    }));
-                }
-            });
-            // 内容
-            dom.appendChild(doc);
-        } catch (error) {
-            log(error);
-            dom.appendChild(htmlToDom(error));
-        }
-        return dom;
-    }
     /**沪江小D排版*/
     function parseHjenglish(rst) {
         var dom = document.createElement('div');
         dom.setAttribute('class', ids.HJENGLISH);
-        try {
+        var parser = new DOMParser(), doc = parser.parseFromString(rst, 'text/html'),
+            content = doc.getElementsByClassName('word-details')[0];
+        dom.appendChild(content);
+        /*try {
             var doc = htmlToDom(cleanHtml(rst));
             var label = doc.querySelector('.word-details-item-content header');
             var entry = doc.querySelector('.word-text h2');
@@ -1016,102 +694,7 @@
         } catch (error) {
             log(error);
             dom.appendChild(htmlToDom(error));
-        }
-        return dom;
-    }
-    /**必应词典排版*/
-    function parseBing(rst) {
-        var html = '';
-        try {
-            rst = rst.replace(/onmouseover/ig, 'data-sound'); // 发音链接预处理
-            rst = cleanHtml(rst)
-                .replace(/(?:a>)/ig, 'span>')
-                .replace(/(?:<a)/ig, '<span');
-            var doc = htmlToDom(rst);
-            doc.querySelectorAll('.hw_ti').forEach(function (ele) { // 牛津词头（不准）
-                ele.remove();
-            });
-            var entry = doc.querySelector('.qdef .hd_area');
-            var concise = doc.querySelector('.qdef ul');
-            var tense = doc.querySelector('.qdef .hd_div1');
-            var oald = doc.querySelector('#authid');
-            if (entry) {
-                html += '<div class="entry">' + entry.innerHTML + '</div>';
-                if (concise) {
-                    html += '<div class="concise">' + concise.outerHTML + '</div>';
-                }
-                if (tense) {
-                    html += '<div class="tense">' + tense.outerHTML + '</div>';
-                }
-                if (oald) {
-                    html += '<div class="oald">《牛津高阶英汉双解词典第八版》<br>' + oald.outerHTML + '</div>';
-                }
-            }
-            // 计算机翻译
-            var machineTrans = doc.querySelector('.smt_hw');
-            if (machineTrans && machineTrans.innerHTML.indexOf('计算机翻译') != -1) {
-                var parent = machineTrans.parentNode;
-                var zhText = parent.querySelector('.p1-11');
-                if (zhText) {
-                    html += '<div class="machine-trans">' + zhText.outerHTML + '</div>';;
-                }
-            }
-        } catch (error) {
-            log(error);
-            html += error;
-        }
-        var dom = document.createElement('div');
-        dom.setAttribute('class', ids.BING);
-        dom.innerHTML = html;
-        // 发音
-        dom.querySelectorAll('[data-sound]').forEach(function (ele) {
-            var str = ele.getAttribute('data-sound');
-            var regex = /'(https:\/\/.*?)'/ig;
-            var match = regex.exec(str);
-            if (match && match.length >= 1) {
-                ele.appendChild(getPlayButton({
-                    name: '♫',
-                    url: match[1]
-                }));
-            }
-        });
-        return dom;
-    }
-    /**谷歌翻译排版*/
-    function parseGoogle(rst) {
-        var dom = document.createElement('div');
-        dom.setAttribute('class', ids.GOOGLE);
-        try {
-            dom.appendChild(htmlToDom(xmlToHtml(objToXml(iframeWin.JSON.parse(rst)), 'span')));
-        } catch (error) {
-            log(error);
-            dom.appendChild(htmlToDom(error));
-        }
-        return dom;
-    }
-    /**剑桥高阶排版*/
-    function parseCambridge(rst) {
-        var dom = document.createElement('div');
-        dom.setAttribute('class', ids.CAMBRIDGE);
-        try {
-            rst = cleanHtml(rst).replace(/(?:a>)/ig, 'span>')
-                .replace(/(?:<a)/ig, '<span');
-            var doc = htmlToDom(rst);
-            // 发音
-            doc.querySelectorAll('[type="audio/mpeg"]').forEach(function (ele) {
-                ele.appendChild(getPlayButton({
-                    name: '♫',
-                    url: 'https://dictionary.cambridge.org/' + ele.getAttribute('src')
-                }));
-            });
-            // 内容
-            doc.querySelectorAll('.entry').forEach(function (ele) {
-                dom.appendChild(ele);
-            });
-        } catch (error) {
-            log(error);
-            dom.appendChild(htmlToDom(error));
-        }
+        }*/
         return dom;
     }
     /**
