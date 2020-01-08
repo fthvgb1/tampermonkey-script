@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         划词翻译：多词典查询
+// @name         日语划词翻译
 // @namespace    http://tampermonkey.net/
-// @version      6.5
-// @description  划词翻译调用“有道词典（有道翻译）、金山词霸、Bing 词典（必应词典）、剑桥高阶、沪江小D、谷歌翻译”
+// @version      0.2
+// @description  调用沪江小D进行日语划词翻译
 // @author       https://github.com/barrer
 // @match        http://*/*
 // @include      https://*/*

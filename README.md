@@ -1,45 +1,35 @@
-## Tampermonkey油猴子脚本
+## 日语划词翻译
 
 **部分预览图：**
 
 ### translate.js
 
-![translate.png](translate/translate.png)
+特色： 
 
-![translate.png](translate/translate-android.png)
-
-特色：  
-* 划词翻译调用“金山词霸、有道词典（有道翻译）、Google Translate（谷歌翻译）、沪江小D、搜狗翻译、必应词典（必应翻译）、Microsoft Translator（必应在线翻译）、海词词典、百度翻译、Oxford Learner's Dictionaries、Oxford Dictionaries、Merriam-Webster、PDF 划词翻译、Google Search、Bing Search（必应搜索）、百度搜索、Wikipedia Search（维基百科搜索）”网页翻译
-* 支持浏览器：Google Chrome、Firefox、Safari、Firefox for Android（无拖动）
-* 支持顺序自定义
-* 支持显示更多图标
-* 支持图标拖动
+和原来一样，没做修改
 
 ### translate-dictionary.js
 
-![translate-dictionary.png](translate/translate-dictionary.png)
+[![lg6Ng1.md.png](https://s2.ax1x.com/2020/01/08/lg6Ng1.md.png)](https://imgchr.com/i/lg6Ng1)
 
-![translate-dictionary.png](translate/translate-dictionary-android.png)
+
 
 特色：  
-* 划词翻译调用“有道词典（有道翻译）、金山词霸、Bing 词典（必应词典）、剑桥高阶、沪江小D、谷歌翻译”
-* 支持浏览器：Google Chrome、Firefox、Safari（无发音）、Firefox for Android（无拖动）
-* 支持发音
-* 支持面板拖动
+* 只调用沪江小D查询日语
+* 支持浏览器：Google Chrome、Firefox、Safari、Firefox for Android（无拖动）
+* 支持图标拖动
 * 支持面板自动调整位置
 
-同时安装：
+安装地址：
 
-① 划词翻译：多词典查询  
-https://greasyfork.org/zh-CN/scripts/376313-%E5%88%92%E8%AF%8D%E7%BF%BB%E8%AF%91-%E5%A4%9A%E8%AF%8D%E5%85%B8%E6%9F%A5%E8%AF%A2
+① 日语划词翻译
+
+https://greasyfork.org/zh-CN/scripts/394792
 
 ② Translate  
 https://greasyfork.org/zh-CN/scripts/34921-translate
 
 可以使用更多的翻译引擎！
-
-**脚本下载地址：**  
-[https://greasyfork.org/zh-CN/users/158488-damijan](https://greasyfork.org/zh-CN/users/158488-damijan)
 
 **使用前：**  
 [https://tampermonkey.net/](https://tampermonkey.net/)  
@@ -54,4 +44,5 @@ Tampermonkey 是一款免费的浏览器扩展和最为流行的用户脚本管�
 脚本名 | 用途
 -|-
 translate.js|划词翻译调用“金山词霸、有道词典（有道翻译）、Google Translate（谷歌翻译）、沪江小D、搜狗翻译、必应词典（必应翻译）、Microsoft Translator（必应在线翻译）、海词词典、百度翻译、Oxford Learner's Dictionaries、Oxford Dictionaries、Merriam-Webster、PDF 划词翻译、Google Search、Bing Search（必应搜索）、百度搜索、Wikipedia Search（维基百科搜索）”网页翻译
-translate-dictionary.js|划词翻译调用“有道词典（有道翻译）、金山词霸、Bing 词典（必应词典）、剑桥高阶、沪江小D、谷歌翻译”
+translate-dictionary.js|日语划词翻译
+
