@@ -47,7 +47,7 @@
     tr-audio{display:block;margin-bottom:5px}
     tr-audio a{margin-right:1em;font-size:80%}
     tr-audio a:last-of-type{margin-right:auto}
-    tr-content{display:none;width:auto;max-height:${trContentHeight};overflow-y: scroll;background:white;padding:2px 8px;margin-top:5px;box-sizing:content-box;font-family:"Helvetica Neue","Helvetica","Arial","sans-serif";font-size:${fontSize}px;font-weight:normal;line-height:normal;-webkit-font-smoothing:auto;font-smoothing:auto;text-rendering:auto}
+    tr-content{display:none;width:${trContentWidth}px;max-height:${trContentHeight}px;overflow-y: scroll;background:white;padding:2px 8px;margin-top:5px;box-sizing:content-box;font-family:"Helvetica Neue","Helvetica","Arial","sans-serif";font-size:${fontSize}px;font-weight:normal;line-height:normal;-webkit-font-smoothing:auto;font-smoothing:auto;text-rendering:auto}
     tr-engine~tr-engine{margin-top:1em}
     tr-engine .title{color:#00c;display:inline-block;font-weight:bold}
     tr-engine .title:hover{text-decoration:none}
@@ -931,6 +931,7 @@
 
     /**沪江小D排版*/
     function parseHjenglish(rst) {
+        var audio = new AudioPlayer();
         var dom = document.createElement('div');
         dom.setAttribute('class', ids.HJENGLISH);
         var parser = new DOMParser(), doc = parser.parseFromString(rst, 'text/html'),
@@ -944,16 +945,16 @@
                 aud.classList.add('audio');
                 aud.classList.add('audio-light');
                 aud.addEventListener('click', function () {
-                    var p = new AudioPlayer();
-                    p.play(aud.getAttribute('data-src'))
-                }, true)
+                    audio.play(aud.getAttribute('data-src'))
+                }, false)
             }
         });
-
-        /*document.addEventListener('click',function (e) {
-            debugger
-        });*/
-
+        dom.addEventListener('click', function (event) {
+            var tar = event.target;
+            if (tar.getAttribute('data-src')) {
+                audio.play(tar.getAttribute('data-src'))
+            }
+        });
         var panee = dom.querySelectorAll('.word-details-pane-footer');
         panee.forEach(function (pane) {
             pane.parentNode.removeChild(pane);
