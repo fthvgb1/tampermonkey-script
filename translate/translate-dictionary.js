@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         日语划词翻译
+// @name         日语划词词典
 // @namespace    http://tampermonkey.net/
 // @version      0.3
 // @description  调用沪江小D进行日语划词翻译
