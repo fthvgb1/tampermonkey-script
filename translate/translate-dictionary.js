@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         日语划词翻译
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  调用沪江小D进行日语划词翻译
 // @author       https://github.com/barrer
 // @match        http://*/*
@@ -56,9 +56,7 @@
     position: relative
 }
 
-.word-details-header {
-    padding: 40px 30px
-}
+
 
 .word-details-header>p {
     line-height: 20px;
@@ -117,7 +115,7 @@
 }
 
 .word-details-pane-header {
-    padding: 23px 32px;
+    padding: 6px 10px;
     background-image: -webkit-linear-gradient(276deg,#030303,#f90);
     background-image: -o-linear-gradient(276deg,#030303,#f90);
     background-image: linear-gradient(276deg,#030303,#f90);
@@ -286,7 +284,6 @@
     .hjenglish dl,.hjenglish dt,.hjenglish dd,.hjenglish p,.hjenglish ul,.hjenglish li,.hjenglish h3{margin:0;padding:0;margin-block-start:0;margin-block-end:0;margin-inline-start:0;margin-inline-end:0}
     .hjenglish h3{font-size:1em;font-weight:normal}
     .hjenglish .detail-pron,.hjenglish .pronounces{color: #00c;}
-    .hjenglish ul{margin-left:2em}
     .hjenglish .def-sentence-from,.hjenglish .def-sentence-to{display:none}
     .hjenglish .detail-groups dd h3:before{counter-increment:eq;content:counter(eq) ".";display:block;width:22px;float:left}
     .hjenglish .detail-groups dl{counter-reset:eq;margin-bottom:.5em;clear:both}
@@ -347,7 +344,7 @@
 
             obj[ids.HJENGLISH] = function (text, time) {
                 ajax('https://dict.hjenglish.com/jp/jc/' + encodeURIComponent(text), function (rst) {
-                    putEngineResult(ids.HJENGLISH, parseHjenglish(rst), time);
+                    putEngineResult(ids.HJENGLISH, parseHjenglish(rst, time), time);
                     showContent();
                 }, function (rst) {
                     putEngineResult(ids.HJENGLISH, htmlToDom('error: 无法连接翻译服务'), time);
@@ -930,13 +927,18 @@
 
 
     /**沪江小D排版*/
-    function parseHjenglish(rst) {
+    function parseHjenglish(rst, time) {
         var audio = new AudioPlayer();
         var dom = document.createElement('div');
         dom.setAttribute('class', ids.HJENGLISH);
         var parser = new DOMParser(), doc = parser.parseFromString(rst, 'text/html'),
             //content = doc.documentElement;
             content = doc.getElementsByClassName('word-details')[0];
+        if (!content) {
+            putEngineResult(ids.HJENGLISH, htmlToDom('error: 查询无结果，可能没这个词'), time);
+            showContent();
+            return;
+        }
         dom.appendChild(content);
         //添加音频按钮
         var auds = dom.querySelectorAll('.word-audio');
@@ -959,6 +961,12 @@
         panee.forEach(function (pane) {
             pane.parentNode.removeChild(pane);
         });
+        var h = dom.querySelectorAll('.simple h2');
+        if (h) {
+            h.forEach(function (h) {
+                h.outerHTML = `<b>${h.textContent}</b>`;
+            })
+        }
 
         var wDHs = dom.querySelectorAll('.word-details-header>p');
         wDHs.forEach(function (wDH) {
