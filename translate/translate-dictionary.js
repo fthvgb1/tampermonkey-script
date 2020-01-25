@@ -995,7 +995,7 @@
                 //content = doc.documentElement;
                 var x = doc.getElementsByClassName('word-details')[0];
                 if (!x) {
-                    debugger
+                    
                     return htmlToDom('error: 查询无结果，可能没这个词');
                 }
                 var fot = x.querySelector('.word-details-pane-footer');
