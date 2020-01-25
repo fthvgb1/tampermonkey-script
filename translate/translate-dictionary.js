@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         日语划词词典
 // @namespace    http://tampermonkey.net/
-// @version      0.3
-// @description  调用沪江小D进行日语划词翻译
-// @author       https://github.com/barrer
+// @version      0.3.1
+// @description  调用沪江小D进行日语划词查询
+// @author       https://github.com/fthvgb1
 // @match        http://*/*
 // @include      https://*/*
 // @include      file:///*
@@ -116,9 +116,9 @@
 
 .word-details-pane-header {
     padding: 6px 10px;
-    background-image: -webkit-linear-gradient(276deg,#030303,#f90);
-    background-image: -o-linear-gradient(276deg,#030303,#f90);
-    background-image: linear-gradient(276deg,#030303,#f90);
+    background-image: -webkit-linear-gradient(276deg,#544646,#7ed285);
+    background-image: -o-linear-gradient(276deg,#544646,#7ed285);
+    background-image: linear-gradient(276deg,#544646,#7ed285);
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     color: #fff
@@ -286,11 +286,17 @@
     .hjenglish .detail-pron,.hjenglish .pronounces{color: #00c;}
     .hjenglish .def-sentence-from,.hjenglish .def-sentence-to{display:none}
     .hjenglish .detail-groups dd h3:before{counter-increment:eq;content:counter(eq) ".";display:block;width:22px;float:left}
+    .detail-groups dd:first-of-type:last-of-type h3:before {
+    display: none
+}
+
+.detail-groups dd:first-of-type:last-of-type h3 p {
+    margin: 0
+}
     .hjenglish .detail-groups dl{counter-reset:eq;margin-bottom:.5em;clear:both}
     .hjenglish ol,.hjenglish ul{list-style:none}
     .hjenglish dd{margin-left:1em}
     .hjenglish dd>p{margin-left:2.5em}
-    .hjenglish .pronounces .word-audio {margin-left:2.5em}
     `;
     // iframe 工具库
     var iframe = document.createElement('iframe');
