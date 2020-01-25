@@ -249,7 +249,7 @@
     overflow: hidden;
     cursor: pointer;
     vertical-align: middle;
-    background: url(img/audio-dark-ea178.png) no-repeat -40px 0/auto 100%
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJwAAAA0CAYAAAB/91HOAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA3hpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMDY3IDc5LjE1Nzc0NywgMjAxNS8wMy8zMC0yMzo0MDo0MiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDozZDg2NTg3NC04Mzg3LTQ1MGItYmY3My0xODVlMTgwZWZlMjUiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MDIyNzg4MDRCMEFGMTFFN0I2N0ZGQkVCRDRBNkU4RUUiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MDIyNzg4MDNCMEFGMTFFN0I2N0ZGQkVCRDRBNkU4RUUiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTUgKE1hY2ludG9zaCkiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDplNDU0MTcwYi02NzIwLTRjOGMtOTYxNy05M2Q1OWFiNzA3NTIiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6M2Q4NjU4NzQtODM4Ny00NTBiLWJmNzMtMTg1ZTE4MGVmZTI1Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+ArAG/QAABIxJREFUeNrsnV1oHFUYhr8zu+ScVF2NEDBGsYogVi+SqghWsKSCF1LBCL3yQqmo6V6JV70ogSLUK/FmU1EsXnghqBFREMG/ohb8qa2IiiKkYBqFgG3TYmeS3fn8TpqU2TG7O5NkZs4m7wsfc/bkMJln5z2/MydRzEwQlJc8fAUQDAfBcBAEw0EwHATBcBAMB21OlZMUuvtVou+fJho+HBCHTKwUUWT9TitDW/uJfp/1iUmR5zEN3GRoZkrKS1o1pHjFXFG5QD1fjtHZoYl57tvWQzt3Eo0XAJ0lTyeNbzAeq8ma3/JnP1ZN7i3ciMRX6nxwbi70/xmq+dPy+UBSszso8DjapWqJw9SgT6Wu7WDmks2U9PXM4cEzvwSTXdalgyevLnUV2np6KnhHmvW7WhUQwN3v1fwnxqvmSBfcnMQ8kmzLMx7rYrqdJ+2D0Sxq5O4wVD/8D0YpGVqof5vzaG8XmC0dj1o8to5NzrOehrNN8iGJ9wWmr5lF/VFW3j3cw3c21w51u8NGWxWPHZS3DAbPenWp1/02678lV/FAvJEVmElztX5yYW5hboV2u89Rs4EnI540LZxtQGXyTd9InF/qvhcjYP+vSzDRwqquPPW8JB+TuAQTOHUTwFMAT9IWbmCoFrzJxCNLzm9Prui0otIepsax5bx62HDp5oAnOx5eoSKkauFUfSEC07G0+sTrNcOSOuZo9wKeAnk6Gm54wn8qMYxodJ9+SA6z0byLZ31n7g54iuXpaDhpH/fGashHvdrc2GZiHMbWc5xqDsBTLE+5M5C6I9ota9LPyGG6Vfmm52oObpcAT7E8nScNzFfGcv6kblb+PG0H0ZuNJ/U6nEyxXVsOWJPA49ikAYJgOAiGgyAYDoLhIBgOgmA4CIZbVK82pEpmw3wB4HHNcEpdiOXc0NV3BDxuG04R/xz97M8Hr8hhsFX50aqh0hZDnirbt0nduz858diyS/F2NDYaz3J+UpUT/KIjzHzv8mdJP0wNf7qDicPohbr0hkUBPHvAk6KFOzGmX5OL+jzpCScngo/l0N80rrjGnTFFXjx5VTIXeNKwJpk0sGf049JwfpHojMwPhhf9E5K6z9FhBHgK5Ek6S505WdUjylNj0lt/u8JANcZEg8yNo5J87nLf7ZVcukm58OQ4lCiMJy1jmmURe2Y7ILXjhasosh1WKzMgqaPNhbksF/OSJN+VqNg87Tk1iQBPNjxtt0qv18Lv37f1m10y/nzR7uCO1YBR/1xwXJJ2p/ctsRHvGUe7qdXz2BlbJBg8mRjOyu4z2688eiRuJIG6tc7hd/NMP8Wm9L86vGS0Kp6V9qg78m66EzxZPNr60PN4u0Adj3X2SsC2xDqB18l9peO5vP04Hgweyu6vJ50avFnvmJkKXhaIZ1usH33w6D79BnWHwNNqmaWWbothlg/v7Zv1Y1SiXdL7fy0AjaUR5Ywi70DfNj1KsS1rjgs8OS6LrEWfSdxfLutKxTPXnqwa+6zvBYk6dafAs5YpLP7XFpSn8D4cBMNBMBwEwXAQDAdBMBwEw0GbVP8JMAAdIoU8hRXz0AAAAABJRU5ErkJggg==) no-repeat -40px 0/auto 100%
 }
 
 .audio-light {
@@ -284,7 +284,6 @@
     .hjenglish dl,.hjenglish dt,.hjenglish dd,.hjenglish p,.hjenglish ul,.hjenglish li,.hjenglish h3{margin:0;padding:0;margin-block-start:0;margin-block-end:0;margin-inline-start:0;margin-inline-end:0}
     .hjenglish h3{font-size:1em;font-weight:normal}
     .hjenglish .detail-pron,.hjenglish .pronounces{color: #00c;}
-    .hjenglish .def-sentence-from,.hjenglish .def-sentence-to{display:none}
     .hjenglish .detail-groups dd h3:before{counter-increment:eq;content:counter(eq) ".";display:block;width:22px;float:left}
     .detail-groups dd:first-of-type:last-of-type h3:before {
     display: none
@@ -293,6 +292,61 @@
 .detail-groups dd:first-of-type:last-of-type h3 p {
     margin: 0
 }
+
+.detail-groups dd:first-of-type:last-of-type h3 p {
+    margin: 0
+}
+
+.detail-groups dd:first-of-type:last-of-type ul {
+    margin-left: 0
+}
+
+.detail-groups ul {
+    margin-left: 22px
+}
+
+.detail-groups ul li {
+    color: #999;
+    margin-bottom: 14px
+}
+
+.detail-groups ul li p {
+    margin: 0 0 6px;
+    line-height: 20px
+}
+
+.detail-pron {
+    color: #999;
+    margin-left: 6px;
+    font-family: Lucida Sans Unicode
+}
+
+.detail .def-sentence-from {
+    color: #666
+}
+
+.detail .def-sentence-to {
+    color: #999
+}
+
+.detail .def-sentence-from .def-sentence-to span {
+    vertical-align: top;
+    margin: 1px 0 2px 2px;
+    display: inline-block
+}
+
+.detail .def-tags span {
+    border: 1px solid #999;
+    color: #666;
+    border-radius: 2px;
+    display: inline-block;
+    line-height: 16px;
+    font-size: 12px;
+    width: 36px;
+    text-align: center;
+    margin-right: 8px
+}
+
     .hjenglish .detail-groups dl{counter-reset:eq;margin-bottom:.5em;clear:both}
     .hjenglish ol,.hjenglish ul{list-style:none}
     .hjenglish dd{margin-left:1em}
@@ -350,7 +404,7 @@
 
             obj[ids.HJENGLISH] = function (text, time) {
                 ajax('https://dict.hjenglish.com/jp/jc/' + encodeURIComponent(text), function (rst) {
-                    putEngineResult(ids.HJENGLISH, parseHjenglish(rst, time), time);
+                    putEngineResult(ids.HJENGLISH, parseHjenglish(rst, time, text), time);
                     showContent();
                 }, function (rst) {
                     putEngineResult(ids.HJENGLISH, htmlToDom('error: 无法连接翻译服务'), time);
@@ -933,7 +987,7 @@
 
 
     /**沪江小D排版*/
-    function parseHjenglish(rst, time) {
+    function parseHjenglish(rst, time, tex) {
         var audio = new AudioPlayer();
         var dom = document.createElement('div');
         dom.setAttribute('class', ids.HJENGLISH);
@@ -951,7 +1005,12 @@
         auds.forEach(function (aud) {
             if (aud.getAttribute('data-src')) {
                 aud.classList.add('audio');
-                aud.classList.add('audio-light');
+                if (aud.parentElement.classList.contains('pronounces')) {
+                    aud.classList.add('audio-light');
+                }
+                if (aud.parentElement.classList.contains('def-sentence-from')) {
+                    aud.parentElement.innerHTML = aud.parentElement.innerHTML.replace(tex, `<mark data-markjs="true" class="highlight">${tex}</mark>`);
+                }
                 aud.addEventListener('click', function () {
                     audio.play(aud.getAttribute('data-src'))
                 }, false)
