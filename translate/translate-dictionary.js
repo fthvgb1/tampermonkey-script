@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         日语划词词典
 // @namespace    http://tampermonkey.net/
-// @version      0.3.2
+// @version      0.3.3
 // @description  调用沪江小D进行日语划词查询
 // @author       https://github.com/fthvgb1
 // @match        http://*/*
@@ -995,23 +995,59 @@
                 //content = doc.documentElement;
                 var x = doc.getElementsByClassName('word-details')[0];
                 if (!x) {
-                    
+
                     return htmlToDom('error: 查询无结果，可能没这个词');
                 }
+                var engine = contentList.querySelector('tr-engine[data-id="' + ids.HJENGLISH + '"]');
+                var a = engine.querySelector('a.title');
+                a.href = a.href.replace('/jc/', '/cj/');
+                //engine.querySelector('a[rel=noreferrer noopener]');
                 var fot = x.querySelector('.word-details-pane-footer');
                 fot.parentNode.removeChild(fot);
                 var add = x.querySelector('.add-scb');
                 add.parentNode.removeChild(add);
                 var s = x.querySelector('.simple-definition');
                 var ar = s.textContent.split('；');
-                var y = '<ul>';
+                var y = '<ol>';
                 if (ar.length > 1) {
                     ar.forEach(function (string, index,) {
                         y += `<li>${string}</li>`;
                     });
-                    y += '</ul>';
+                    y += '</ol>';
                     s.innerHTML = y;
                 }
+                var t = x.querySelector('.detail-groups dl dd');
+                if (t) {
+                    t.style = 'margin-inline-start:6px'
+                }
+                var li = x.querySelectorAll('.detail-groups dl dd ol,ul');
+                if (li) {
+                    li.forEach(function (e) {
+                        e.style = 'list-style: none';
+                    });
+                }
+                //添加音频按钮
+                var auds = x.querySelectorAll('.word-audio');
+                auds.forEach(function (aud) {
+                    if (aud.getAttribute('data-src')) {
+                        aud.classList.add('audio');
+                        if (aud.parentElement.classList.contains('pronounces')) {
+                            aud.classList.add('audio-light');
+                        }
+                        if (aud.parentElement.classList.contains('def-sentence-from')) {
+                            aud.parentElement.innerHTML = aud.parentElement.innerHTML.replace(tex, `<mark data-markjs="true" class="highlight">${tex}</mark>`);
+                        }
+                        aud.addEventListener('click', function () {
+                            audio.play(aud.getAttribute('data-src'))
+                        }, false)
+                    }
+                });
+                x.addEventListener('click', function (event) {
+                    var tar = event.target;
+                    if (tar.getAttribute('data-src')) {
+                        audio.play(tar.getAttribute('data-src'))
+                    }
+                });
                 return x;
             }(rst, time, tex, audio), time);
             showContent();
@@ -1028,7 +1064,7 @@
 
 
     /**沪江小D排版*/
-    function parseHjenglish(rst, time, tex) {
+    function parseHjenglish(rst, time, tex, that) {
         var audio = new AudioPlayer();
         var dom = document.createElement('div');
         dom.setAttribute('class', ids.HJENGLISH);
@@ -1036,7 +1072,7 @@
             //content = doc.documentElement;
             content = doc.getElementsByClassName('word-details')[0];
         if (!content) {
-            return cj(rst, time, tex, audio);
+            return cj(rst, time, tex, audio, that);
         }
         dom.appendChild(content);
         //添加音频按钮
@@ -1112,6 +1148,8 @@
                 }, true)
             }
         }
+        //var uls = dom.querySelectorAll('.detail-groups');
+        //debugger
         return dom;
     }
     /**
