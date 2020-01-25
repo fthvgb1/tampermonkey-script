@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         日语划词词典
 // @namespace    http://tampermonkey.net/
-// @version      0.3.1
+// @version      0.3.2
 // @description  调用沪江小D进行日语划词查询
 // @author       https://github.com/fthvgb1
 // @match        http://*/*
@@ -78,7 +78,7 @@
     cursor: pointer;
     display: inline-block;
     margin: 0 15px 15px 0;
-    height: 60px;
+    height: 50px;
     border-radius: 5px;
     padding: 0 20px;
     background: #f5f8ff
@@ -401,7 +401,6 @@
         // 翻译引擎
         engines: (function () {
             var obj = {};
-
             obj[ids.HJENGLISH] = function (text, time) {
                 ajax('https://dict.hjenglish.com/jp/jc/' + encodeURIComponent(text), function (rst) {
                     putEngineResult(ids.HJENGLISH, parseHjenglish(rst, time, text), time);
@@ -986,6 +985,48 @@
     }
 
 
+    //查日语没有结果时，查中日词典
+    function cj(rst, time, tex, audio) {
+        ajax('https://dict.hjenglish.com/jp/cj/' + encodeURIComponent(tex), function (rst) {
+            putEngineResult(ids.HJENGLISH, function (rst, time, text, audio) {
+                var dom = document.createElement('div');
+                dom.setAttribute('class', ids.HJENGLISH);
+                var parser = new DOMParser(), doc = parser.parseFromString(rst, 'text/html');
+                //content = doc.documentElement;
+                var x = doc.getElementsByClassName('word-details')[0];
+                if (!x) {
+                    debugger
+                    return htmlToDom('error: 查询无结果，可能没这个词');
+                }
+                var fot = x.querySelector('.word-details-pane-footer');
+                fot.parentNode.removeChild(fot);
+                var add = x.querySelector('.add-scb');
+                add.parentNode.removeChild(add);
+                var s = x.querySelector('.simple-definition');
+                var ar = s.textContent.split('；');
+                var y = '<ul>';
+                if (ar.length > 1) {
+                    ar.forEach(function (string, index,) {
+                        y += `<li>${string}</li>`;
+                    });
+                    y += '</ul>';
+                    s.innerHTML = y;
+                }
+                return x;
+            }(rst, time, tex, audio), time);
+            showContent();
+        }, function (rst) {
+            putEngineResult(ids.HJENGLISH, htmlToDom('error: 无法连接翻译服务'), time);
+            showContent();
+        }, {
+            headers: {
+                'Cookie': 'HJ_SID=' + uuid() + '; HJ_SSID_3=' + uuid() + '; HJ_CST=1; HJ_CSST_3=1; HJ_UID=' + uuid(),
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36'
+            }
+        });
+    }
+
+
     /**沪江小D排版*/
     function parseHjenglish(rst, time, tex) {
         var audio = new AudioPlayer();
@@ -995,9 +1036,7 @@
             //content = doc.documentElement;
             content = doc.getElementsByClassName('word-details')[0];
         if (!content) {
-            putEngineResult(ids.HJENGLISH, htmlToDom('error: 查询无结果，可能没这个词'), time);
-            showContent();
-            return;
+            return cj(rst, time, tex, audio);
         }
         dom.appendChild(content);
         //添加音频按钮
@@ -1073,34 +1112,6 @@
                 }, true)
             }
         }
-
-        //var de = dom.querySelector('')
-        //debugger
-        /*try {
-            var doc = htmlToDom(cleanHtml(rst));
-            var label = doc.querySelector('.word-details-item-content header');
-            var entry = doc.querySelector('.word-text h2');
-            var collins = doc.querySelector('div[data-id="detail"] .word-details-item-content .detail-groups');
-            if (entry) {
-                var entryDom = document.createElement('div');
-                entryDom.setAttribute('class', 'entry');
-                entryDom.innerHTML = entry.innerHTML;
-                dom.appendChild(entryDom);
-                if (collins) {
-                    if (label) {
-                        var regex = /(《.*?》)/ig;
-                        var match = regex.exec(label.innerHTML);
-                        if (match && match[1]) {
-                            dom.appendChild(htmlToDom('<div>' + match[1] + '</div>'));
-                        }
-                    }
-                    dom.appendChild(collins);
-                }
-            }
-        } catch (error) {
-            log(error);
-            dom.appendChild(htmlToDom(error));
-        }*/
         return dom;
     }
     /**
