@@ -911,6 +911,10 @@
         audioCache = {};
         engineResult = {};
         forceStopDrag();
+        var s = icon.querySelector('.langs-cj');
+        if (s) {
+            s.parentNode.removeChild(s);
+        }
     }
     /**发音*/
     function play(obj) {
