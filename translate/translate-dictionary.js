@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         日语划词词典
 // @namespace    http://tampermonkey.net/
-// @version      0.3.3
+// @version      0.4
 // @description  调用沪江小D进行日语划词查询
 // @author       https://github.com/fthvgb1
 // @match        http://*/*
@@ -986,7 +986,7 @@
 
 
     //查日语没有结果时，查中日词典
-    function cj(rst, time, tex, audio) {
+    function cj(time, tex, audio) {
         ajax('https://dict.hjenglish.com/jp/cj/' + encodeURIComponent(tex), function (rst) {
             putEngineResult(ids.HJENGLISH, function (rst, time, text, audio) {
                 var dom = document.createElement('div');
@@ -1064,7 +1064,7 @@
 
 
     /**沪江小D排版*/
-    function parseHjenglish(rst, time, tex, that) {
+    function parseHjenglish(rst, time, tex) {
         var audio = new AudioPlayer();
         var dom = document.createElement('div');
         dom.setAttribute('class', ids.HJENGLISH);
@@ -1072,7 +1072,7 @@
             //content = doc.documentElement;
             content = doc.getElementsByClassName('word-details')[0];
         if (!content) {
-            return cj(rst, time, tex, audio, that);
+            return cj(time, tex, audio);
         }
         dom.appendChild(content);
         //添加音频按钮
@@ -1148,6 +1148,26 @@
                 }, true)
             }
         }
+        if (/[\u4e00-\u9fa5]/.test(tex) || /[^\x00-\xff]/.test(tex)) {
+            var img = icon.querySelector('img');
+            var im = document.createElement('span');
+            im.style = `
+    font-size: 14px;
+    line-height: 20px;
+    color: #999;
+    cursor: pointer;
+    margin-left: 10rem;
+`;
+            im.classList.add('langs-cj');
+            im.textContent = '中日';
+            im.onclick = function () {
+                im.parentNode.removeChild(im)
+                contentList.querySelector('tr-engine').setAttribute('data-id', ids.HJENGLISH);
+                return cj(time, tex, audio);
+            };
+            img.parentNode.insertBefore(im, img.nextSibling)
+        }
+
         //var uls = dom.querySelectorAll('.detail-groups');
         //debugger
         return dom;
