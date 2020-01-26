@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         日语划词词典
 // @namespace    http://tampermonkey.net/
-// @version      0.4
+// @version      0.41
 // @description  调用沪江小D进行日语划词查询
 // @author       https://github.com/fthvgb1
 // @match        http://*/*
