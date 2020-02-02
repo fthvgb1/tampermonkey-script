@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         日语划词词典
 // @namespace    http://tampermonkey.net/
-// @version      0.41
+// @version      0.5
 // @description  调用沪江小D进行日语划词查询
 // @author       https://github.com/fthvgb1
 // @match        http://*/*
@@ -302,7 +302,7 @@
 }
 
 .detail-groups ul {
-    margin-left: 22px
+    //margin-left: 22px
 }
 
 .detail-groups ul li {
@@ -1020,14 +1020,45 @@
                     y += '</ol>';
                     s.innerHTML = y;
                 }
-                var t = x.querySelector('.detail-groups dl dd');
-                if (t) {
-                    t.style = 'margin-inline-start:6px'
+                var t = x.querySelectorAll('.detail-groups dl dd');
+                if (t.length > 0) {
+                    t.forEach((value => {
+                        value.style = 'margin-inline-start:6px';
+                    }))
                 }
+                var ul = x.querySelectorAll('.detail-groups dl dd ul');
+                //console.log('sss')
+                if (ul.length > 0) {
+                    ul.forEach((v, i) => {
+                        v.style.display = 'none';
+                        //console.log(v.childNodes.length)
+                        if (v.children.length < 1) {
+                            return;
+                        }
+                        var y = v.previousElementSibling.lastElementChild;
+                        var s = document.createElement('b');
+                        s.style.cursor = 'pointer';
+                        s.style.color = 'firebrick';
+                        s.style.fontSize = '0.8em';
+                        s.textContent = '例';
+                        s.title = '点击查看或隐藏例句';
+                        s.onclick = (event) => {
+                            v.style.display = v.style.display === 'none' ? 'block' : 'none';
+                        };
+                        y.appendChild(s);
+                    });
+                }
+                var er = x.querySelectorAll('.detail-groups dl dd h3');
+                if (er.length > 0) {
+                    er.forEach(value => {
+                        value.style.fontSize = '1em';
+                    })
+                }
+
                 var li = x.querySelectorAll('.detail-groups dl dd ol,ul');
                 if (li) {
                     li.forEach(function (e) {
-                        e.style = 'list-style: none';
+                        e.style.listStyle = 'list-style: none';
                     });
                 }
                 //添加音频按钮
@@ -1128,6 +1159,28 @@
         }
         var tabss = dom.querySelectorAll('.word-details-tab');
 
+        var ul = dom.querySelectorAll('.detail-groups dl dd ul');
+        if (ul.length > 0) {
+            ul.forEach((v, i) => {
+                v.style.display = 'none';
+
+                if (v.children.length < 1) {
+                    return;
+                }
+                var y = v.previousElementSibling.lastElementChild;
+                var s = document.createElement('b');
+                s.style.cursor = 'pointer';
+                s.style.color = 'firebrick';
+                s.style.fontSize = '0.8em';
+                s.textContent = '例';
+                s.title = '点击查看或隐藏例句';
+                s.onclick = (event) => {
+                    v.style.display = v.style.display === 'none' ? 'block' : 'none';
+                };
+                y.appendChild(s);
+            });
+        }
+
         if (tabss.length > 1) {
             var panes = dom.querySelectorAll('.word-details-pane');
             var j = 0;
@@ -1158,10 +1211,12 @@
             im.style = `
     font-size: 14px;
     line-height: 20px;
-    color: #999;
+    color: rgb(89, 8, 99);
     cursor: pointer;
-    margin-left: 10rem;
+    float: right;
+    margin-right: 1rem;
 `;
+            im.title = '点击查看汉字日文查询';
             im.classList.add('langs-cj');
             im.textContent = '中日';
             im.onclick = function () {
