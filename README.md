@@ -8,26 +8,22 @@
 
 调用沪江小d的网页
 
-fork https://github.com/barrer/tampermonkey-script 修改的，并参考了http://uusama.com/648.html 
+fork自 https://github.com/barrer/tampermonkey-script 修改的，并参考了 http://uusama.com/648.html 
 
 ### 截图
 
-[![1VUfWn.md.png](https://s2.ax1x.com/2020/01/23/1VUfWn.md.png)](https://imgchr.com/i/1VUfWn)
-
-[![1VUrsf.md.png](https://s2.ax1x.com/2020/01/23/1VUrsf.md.png)](https://imgchr.com/i/1VUrsf)
-
-
+[![1VUfWn.md.png](translate/description.png)](https://imgchr.com/i/1VUfWn)
 
 ### 功能
 
 * 只调用沪江小D查询日语，可以点击语音按钮发音
 * 默认是日中查询，没有结果时自动使用中日查询，日中查询有结果有添加主动中日查询的按钮
-* 有多个发音时，可以点击切换
+* 有多个意思和发音时，可以点击切换
 * 支持浏览器：Google Chrome、Firefox、Safari、Firefox for Android（无拖动）
 * 支持图标拖动
 * 支持面板自动调整位置
 
-下个版本使例句可以折叠
+
 
 ### 其它
 
