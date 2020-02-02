@@ -1072,17 +1072,9 @@
                         if (aud.parentElement.classList.contains('def-sentence-from')) {
                             aud.parentElement.innerHTML = aud.parentElement.innerHTML.replace(tex, `<mark data-markjs="true" class="highlight">${tex}</mark>`);
                         }
-                        aud.addEventListener('click', function () {
-                            audio.play(aud.getAttribute('data-src'))
-                        }, false)
                     }
                 });
-                x.addEventListener('click', function (event) {
-                    var tar = event.target;
-                    if (tar.getAttribute('data-src')) {
-                        audio.play(tar.getAttribute('data-src'))
-                    }
-                });
+
                 return x;
             }(rst, time, tex, audio), time);
             showContent();
@@ -1102,6 +1094,12 @@
     function parseHjenglish(rst, time, tex) {
         var audio = new AudioPlayer();
         var dom = document.createElement('div');
+        dom.addEventListener('click', function (event) {
+            var tar = event.target;
+            if (tar.getAttribute('data-src') && tar.classList.contains('audio')) {
+                audio.play(tar.getAttribute('data-src'))
+            }
+        }, false);
         dom.setAttribute('class', ids.HJENGLISH);
         var parser = new DOMParser(), doc = parser.parseFromString(rst, 'text/html'),
             //content = doc.documentElement;
@@ -1121,17 +1119,9 @@
                 if (aud.parentElement.classList.contains('def-sentence-from')) {
                     aud.parentElement.innerHTML = aud.parentElement.innerHTML.replace(tex, `<mark data-markjs="true" class="highlight">${tex}</mark>`);
                 }
-                aud.addEventListener('click', function () {
-                    audio.play(aud.getAttribute('data-src'))
-                }, false)
             }
         });
-        dom.addEventListener('click', function (event) {
-            var tar = event.target;
-            if (tar.getAttribute('data-src')) {
-                audio.play(tar.getAttribute('data-src'))
-            }
-        });
+
         var panee = dom.querySelectorAll('.word-details-pane-footer');
         panee.forEach(function (pane) {
             pane.parentNode.removeChild(pane);
@@ -1191,17 +1181,25 @@
                         return false
                     }
                     this.parentNode.querySelector('.word-details-tab-active').classList.remove('word-details-tab-active');
+                    //this.parentNode.querySelector('.word-details-tab-active').classList.remove('word-details-tab-active');
                     var that = this;
-
+                    this.classList.add('word-details-tab-active');
                     tabss.forEach(function (v, k, p) {
                         if (v === that) {
+
                             panes = dom.querySelectorAll('.word-details-pane');
-                            var tm = dat[k].cloneNode(true);
-                            panes[k].parentNode.insertBefore(tm, panes[k].parentNode.firstChild);
-                            panes[k].parentNode.removeChild(panes[k]);
+                            panes.forEach((value, key) => {
+                                if (value.style.display === 'block' || value.style.display === '') {
+                                    value.style.display = 'none';
+                                }
+                            });
+                            panes.forEach((value, key) => {
+                                if (key === k) {
+                                    value.style.display = 'block';
+                                }
+                            });
                         }
                     });
-                    this.classList.add('word-details-tab-active')
                 }, true)
             }
         }
