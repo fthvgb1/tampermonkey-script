@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         日语划词词典
 // @namespace    http://tampermonkey.net/
-// @version      0.5
+// @version      0.51
 // @description  调用沪江小D进行日语划词查询
 // @author       https://github.com/fthvgb1
 // @match        http://*/*
@@ -178,9 +178,6 @@
     background: none
 }
 
-.word-details-item {
-    margin-bottom: 50px
-}
 
 .word-details-item:last-of-type {
     margin-bottom: 0
