@@ -416,6 +416,21 @@
             return obj;
         })()
     };
+    var vices = [];
+    var vice;
+    var ttt = '';
+
+    function speech(event) {
+        var ss = icon.querySelector('img[icon-id="icon-speech"]');
+
+        if (event.target === ss) {
+            var x = new SpeechSynthesisUtterance(ttt);
+            x.voice = vice;
+            speechSynthesis.speak(x);
+
+        }
+    }
+
     // 绑定图标拖动事件
     var iconDrag = new Drag(icon);
     // 图标数组
@@ -433,6 +448,38 @@
             });
             initContent(); // 初始化翻译面板
             displayContent(); // 立马显示翻译面板
+        }
+    }, {
+        name: 'tts发音',
+        id: 'icon-speech',
+        image: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAbCAYAAACJISRoAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAANsSURBVEhLlVY7aBRRFD1vN5vVJKtoosFI4icYEEHE+IckiBFJITaWFlpYiIWdFmKhoihYamWhkM7KylYUC+OfWAiCHxJFo0ENyWqya3a8n/f2vdmdgXjZ3fPOnTfvnnNn3syag8NRBPrAGCQiCPGfWLNOhrKaCJEm6oh+ZUDcYh2X8PM1HUctIooDJEU6ol8ZJHCLGv64puNci1gdiSjDep7mRCHObRGvqA7pkzERcjSzMRs566lOFLwjDj1HZXkMlOWyQOdSgxM7gFN7DLpbgYZMuhNNx9EK8wrsQH4X5yL0rwXODwID64DdXcDpPqBjSboTTce5bZfqYIUtjUAhb9DWDBzdanB8O6RV994Czz4DbU3AqkK6E4U4lyKG6vHiBzZEOLcXuEjKL+8H9nUDU7PA9ccRhl8CEzNAls7I0jVKcrJ+eYSeNl7UO+KQIrmswZEtwLFeQ/0HVrYA7fTlRS89AEbGDcoVmW8j2cmFQYNrQ9QRWk8PK0oRvmv61gCleeDqQ+AGKecYnwLGfgKVao9dqJNCPkIrta8hU3PczbcoRTJUsSUP/CkDoxPA96JTSKGSZOhDnZzcZUg90Nxolbtw10TtahFWxpSrahsDXY4HKSY8j28Cbm+eOhE/7J1w2CIxHRQBV0lOlI0EbkcSgRPGqpN4BFwlOVE2ErgdSQROGKtOmHBVVRjocjxIMVmoEw4pwnfPTIl3OLC5HVjRHOhSSRZdqJPRr8Cjj3TD/E13wiFFSvNGJufpOXWmX+8aDr6oXctoEiurVU78zmu63UeAYindCaMUKc/Tjn4F3Hoeyd74RpuQNyJvyLMDwM5OfQr7UCez5KBIHXD7aOwX8O4H8Yp3wmhfvzyinU/fPLWMqy8iPLxJH4zztNvvv9ei21YDV2jDPvlU7YYEn9NEjyZ6/GFmTnPusNWntEwK+NpMz0WYLAK3X0S4+ZTzwFAP0EsFJn8DX6bViV9GdRZLEZ3Lxb0TjqoT7rHkWFLA+X3SUQAObSSXDcDdN8AHagl12K0hYU9LxAX9W+E3Y5ZfVHTa34qRa8D5+uUs1qxj28UTUpA+lcjQ4noXUkclrzP8vBinhWXEhShi10RQhvVcxAd5HVlOBxO5nuSdVJWohHpuUaOGO+WcD7nFqpOYkpDLgLhFjQQeYuAkAvAPy4GovdmaNF4AAAAASUVORK5CYII=',
+        trigger: function (text, time) {
+            speechSynthesis.getVoices();
+            ttt = text;
+            setTimeout(() => {
+                if (vices.length < 1) {
+                    vices = speechSynthesis.getVoices();
+                    vices.forEach(value => {
+                        if (!vice && value.lang === 'ja-JP') {
+                            vice = value;
+                        }
+                    });
+                    if (!vice) {
+                        icon.querySelector('img[icon-id="icon-speech"]').title = '似乎无可用的tts,请先安装';
+
+                    }
+                }
+                if (vice) {
+                    var s = new SpeechSynthesisUtterance();
+                    s.voice = vice;
+                    s.text = text;
+                    speechSynthesis.speak(s);
+                    var ss = icon.querySelector('img[icon-id="icon-speech"]');
+                    ss.addEventListener('click', speech, false)
+                }
+
+            }, 1000);
+
         }
     }];
     // 添加翻译引擎图标
@@ -911,6 +958,11 @@
         var s = icon.querySelector('.langs-cj');
         if (s) {
             s.parentNode.removeChild(s);
+        }
+        var k = icon.querySelector('img[icon-id="icon-speech"]');
+        speechSynthesis.cancel();
+        if (k) {
+            k.removeEventListener('click', speech, false)
         }
     }
     /**发音*/
