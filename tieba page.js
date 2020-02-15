@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    http://tampermonkey.net/
-// @version      0.4
+// @version      0.5
 // @author       fthvgb1
 // @match        https?://tieba.baidu.com/*
 // @grant        unsafeWindow
@@ -125,11 +125,11 @@ function t() {
 }
 
 function lz() {
-    let lz = document.querySelector('span.poster_only');
+    var lz = document.querySelector('span.poster_only');
     if (lz) {
         lz.onclick = null;
-        let h = location.href;
-        let ff = 0;
+        var h = location.href;
+        var ff = 0;
         if (h.indexOf('see_lz=1') > -1) {
             lz.textContent = '取消只看楼主';
             h = h.replace('see_lz=1', 'see_lz=0')
@@ -177,7 +177,7 @@ function f(value) {
         '.img_desc', '.father-cut-recommend-normal-box', '.father-cut-daoliu-normal-box',
         '#diversBanner', '.footer_logo', '.j_footer_link'
     ].forEach(value => {
-        let x = document.querySelector(value);
+        var x = document.querySelector(value);
         if (x) {
             x.parentNode.removeChild(x)
         }
@@ -189,6 +189,9 @@ function f(value) {
     $("#list_pager>a").on("click", function () {
         setTimeout(t, 3000);
     });
+    $('.j_pager_input').blur(() => {
+        setTimeout(t, 3000);
+    })
 
 
 })();
