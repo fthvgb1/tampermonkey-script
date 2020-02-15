@@ -19,6 +19,7 @@ fork自 https://github.com/barrer/tampermonkey-script 修改的，并参考了 h
 * 只调用沪江小D查询日语，可以点击语音按钮发音
 * 默认是日中查询，没有结果时自动使用中日查询，日中查询有结果有添加主动中日查询的按钮
 * 有多个意思和发音时，可以点击切换
+* 可以选中段落朗读，不过要先安装tts语音，windows10在语音中添加日语即可，macOS类似，linux不知道怎么安装tts
 * 支持浏览器：Google Chrome、Firefox、Safari、Firefox for Android（无拖动）
 * 支持图标拖动
 * 支持面板自动调整位置
