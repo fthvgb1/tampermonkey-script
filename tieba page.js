@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    http://tampermonkey.net/
-// @version      0.5
+// @version      0.50
 // @author       fthvgb1
-// @match        https?://tieba.baidu.com/*
+// @match        https://tieba.baidu.com/*
 // @grant        unsafeWindow
 // @description 显示手机版贴吧里被隐藏的楼层与翻页按钮
 // ==/UserScript==
@@ -164,7 +164,31 @@ function f(value) {
     }
 }
 
-(function () {
+function list() {
+    [
+        '.frs_daoliu_for_app', '.tl_shadow_for_app_modle',
+    ].forEach(value => {
+        let x = document.querySelector(value);
+        if (x) {
+            x.parentNode.removeChild(x)
+        }
+    });
+    let ads = document.querySelectorAll('li.tl_shadow_for_app');
+    if (ads.length > 0) {
+        let url = document.querySelector('.tl_shadow_for_app').parentNode.querySelector('a.j_common').href;
+        ads.forEach(v => {
+            v.classList.remove('tl_shadow_for_app');
+            let a = v.querySelector('a.j_enter_for_app');
+            let tid = v.getAttribute('data-tid');
+            a.href = url.replace(/\/(\d+)\?/.exec(url)[1], tid);
+            a.classList.remove('tl_shadow_for_app');
+        })
+    }
+
+
+}
+
+function detail() {
     document.querySelectorAll('ul#pblist>li').forEach(value => {
         if (value.classList.contains('class_hide_flag')) {
             value.classList.remove('class_hide_flag');
@@ -175,13 +199,14 @@ function f(value) {
 
     [
         '.img_desc', '.father-cut-recommend-normal-box', '.father-cut-daoliu-normal-box',
-        '#diversBanner', '.footer_logo', '.j_footer_link'
+        '#diversBanner', '.footer_logo', '.j_footer_link', '.frs_daoliu_for_app'
     ].forEach(value => {
         var x = document.querySelector(value);
         if (x) {
             x.parentNode.removeChild(x)
         }
     });
+
 
     document.querySelector('.father-cut-pager-class-no-page').classList.remove('father-cut-pager-class-no-page');
 
@@ -192,6 +217,17 @@ function f(value) {
     $('.j_pager_input').blur(() => {
         setTimeout(t, 3000);
     })
+}
+
+(function () {
+    let url = location.href;
+
+    if (/\/p\/\d+/.test(url)) {
+        detail();
+    }
+    if (/f\?kw=.+/.test(url)) {
+        list();
+    }
 
 
 })();
