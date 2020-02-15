@@ -190,7 +190,7 @@ function list() {
     if (ads.length > 0) {
         let url = document.querySelector('.tl_shadow_for_app').parentNode.querySelector('a.j_common').href;
         ads.forEach(v => {
-            v.classList.remove('tl_shadow_for_app');
+            //v.classList.remove('tl_shadow_for_app');
             let a = v.querySelector('a.j_enter_for_app');
             let tid = v.getAttribute('data-tid');
             a.href = url.replace(/\/(\d+)\?/.exec(url)[1], tid);
