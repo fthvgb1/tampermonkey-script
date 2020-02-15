@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    http://tampermonkey.net/
-// @version      0.50
+// @version      0.51
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @grant        unsafeWindow
@@ -158,10 +158,23 @@ function f(value) {
         } else if (fl === 2) {
             l.textContent = '沙发';
         } else if (fl === 3) {
-            l.textContent = '地板';
+            l.textContent = '板凳';
         }
         value.querySelector('.list_item_time').parentNode.appendChild(l);
     }
+}
+
+function check() {
+    let userAgentInfo = navigator.userAgent;
+    let Agents = ["Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod"];
+    let flag = 0;
+    for (let v = 0; v < Agents.length; v++) {
+        if (userAgentInfo.indexOf(Agents[v]) > -1) {
+            flag = 1;
+            break;
+        }
+    }
+    return flag;
 }
 
 function list() {
@@ -220,13 +233,16 @@ function detail() {
 }
 
 (function () {
-    let url = location.href;
+    'use strict';
+    if (check()) {
+        let url = location.href;
 
-    if (/\/p\/\d+/.test(url)) {
-        detail();
-    }
-    if (/f\?kw=.+/.test(url)) {
-        list();
+        if (/\/p\/\d+/.test(url)) {
+            detail();
+        }
+        if (/f\?kw=.+/.test(url)) {
+            list();
+        }
     }
 
 
