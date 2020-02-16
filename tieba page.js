@@ -179,7 +179,7 @@ function check() {
 
 function list() {
     [
-        '.frs_daoliu_for_app', '.tl_shadow_for_app_modle',
+        '.frs_daoliu_for_app', '.tl_shadow_for_app_modle', '.footer_logo', '.footer_link_highlight'
     ].forEach(value => {
         let x = document.querySelector(value);
         if (x) {
@@ -234,15 +234,13 @@ function detail() {
 
 (function () {
     'use strict';
-    if (check()) {
-        let url = location.href;
+    let url = location.href;
 
-        if (/\/p\/\d+/.test(url)) {
-            detail();
-        }
-        if (/f\?kw=.+/.test(url)) {
-            list();
-        }
+    if (/\/p\/\d+/.test(url)) {
+        detail();
+    }
+    if (/f\?kw=.+/.test(url) || /mo\/q\/m\?word=.+/.test(url)) {
+        list();
     }
 
 
