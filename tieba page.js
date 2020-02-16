@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    http://tampermonkey.net/
-// @version      0.51
+// @version      0.52
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @grant        unsafeWindow
