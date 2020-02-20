@@ -14,10 +14,65 @@
 (function () {
     'use strict';
 
+
+    function gif3(v) {
+        var imgs = v.querySelectorAll('img.BDE_Image');
+        if (imgs.length > 0) {
+            imgs.forEach(img => {
+                var src = img.src;
+                var s = /&src=(.*)/.exec(src);
+                if (s != null) {
+                    var x = s.length > 0 ? s[1] : src;
+                    img.src = decodeURIComponent(x);
+                }
+
+            })
+        }
+    }
+
+    function gif(v) {
+        var imgs = v.querySelectorAll('div[data-class="BDE_Image"]');
+        if (imgs.length > 0) {
+            imgs.forEach(value => {
+                var src = decodeURIComponent(value.getAttribute('data-url'));
+
+                //console.log(src);
+                var s = /&src=(.*)/.exec(src);
+                if (s != null) {
+                    var ss = s[1];
+                    var img = document.createElement('img');
+                    img.src = (ss);
+                    img.className = 'BDE_Image';
+                    value.outerHTML = img.outerHTML;
+                }
+            })
+        }
+        gif3(v)
+    }
+
     function t() {
         lz();
-        $("ul#pblist>li").forEach(function (e) {
+        $("ul#pblist>li").forEach(function (e, iii) {
             f(e);
+            if (iii === 0) {
+                var oo = e.querySelectorAll('.pb_img_item');
+                if (oo.length > 0) {
+                    oo.forEach(value => {
+                        if (value.getAttribute('data-url')) {
+                            value.setAttribute('data-class', 'BDE_Image');
+                            value.setAttribute('src', value.getAttribute('data-url'));
+                        }
+                    });
+                    //oo[0].parentElement.outerHTML=`<span class="wrap pbimgwapper">${oo[0].parentElement.innerHTML}</span>`
+                }
+                var zz = e.querySelector('#diversBanner');
+                if (zz) {
+                    zz.parentNode.removeChild(zz);
+                }
+
+            }
+            gif(e);
+
             var ee = $(e);
             var tid = ee.attr("tid");
             var content = ee.find(".list_item_top");
