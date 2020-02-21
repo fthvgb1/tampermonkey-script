@@ -73,11 +73,11 @@
             let tid = ee.attr("tid");
             let content = ee.find(".list_item_top");
             let x = ee.find('.list_item_top a.j_report_btn');
+            let kz = 0;
             if (x && x.length > 0) {
-                let kz = x[0].href.match(/tid=(\d+)&/);
+                kz = x[0].href.match(/tid=(\d+)&/);
                 kz = kz[1];
             }
-
             let floor = e.getElementsByClassName('pb_floow_load');
             if (floor.length > 0) {
                 let text = floor[0].textContent;
