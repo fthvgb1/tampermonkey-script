@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    http://tampermonkey.net/
-// @version      0.53
+// @version      0.60
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @grant        none
@@ -9,20 +9,18 @@
 // ==/UserScript==
 
 
-
-
 (function () {
     'use strict';
 
 
     function gif3(v) {
-        var imgs = v.querySelectorAll('img.BDE_Image');
+        let imgs = v.querySelectorAll('img.BDE_Image');
         if (imgs.length > 0) {
             imgs.forEach(img => {
-                var src = img.src;
-                var s = /&src=(.*)/.exec(src);
+                let src = img.src;
+                let s = /&src=(.*)/.exec(src);
                 if (s != null) {
-                    var x = s.length > 0 ? s[1] : src;
+                    let x = s.length > 0 ? s[1] : src;
                     img.src = decodeURIComponent(x);
                 }
 
@@ -31,16 +29,14 @@
     }
 
     function gif(v) {
-        var imgs = v.querySelectorAll('div[data-class="BDE_Image"]');
+        let imgs = v.querySelectorAll('div[data-class="BDE_Image"]');
         if (imgs.length > 0) {
             imgs.forEach(value => {
-                var src = decodeURIComponent(value.getAttribute('data-url'));
-
-                //console.log(src);
-                var s = /&src=(.*)/.exec(src);
+                let src = decodeURIComponent(value.getAttribute('data-url'));
+                let s = /&src=(.*)/.exec(src);
                 if (s != null) {
-                    var ss = s[1];
-                    var img = document.createElement('img');
+                    let ss = s[1];
+                    let img = document.createElement('img');
                     img.src = (ss);
                     img.className = 'BDE_Image';
                     value.outerHTML = img.outerHTML;
@@ -55,7 +51,7 @@
         $("ul#pblist>li").forEach(function (e, iii) {
             f(e);
             if (iii === 0) {
-                var oo = e.querySelectorAll('.pb_img_item');
+                let oo = e.querySelectorAll('.pb_img_item');
                 if (oo.length > 0) {
                     oo.forEach(value => {
                         if (value.getAttribute('data-url')) {
@@ -65,7 +61,7 @@
                     });
                     //oo[0].parentElement.outerHTML=`<span class="wrap pbimgwapper">${oo[0].parentElement.innerHTML}</span>`
                 }
-                var zz = e.querySelector('#diversBanner');
+                let zz = e.querySelector('#diversBanner');
                 if (zz) {
                     zz.parentNode.removeChild(zz);
                 }
@@ -73,46 +69,46 @@
             }
             gif(e);
 
-            var ee = $(e);
-            var tid = ee.attr("tid");
-            var content = ee.find(".list_item_top");
-            var x = ee.find('.list_item_top a.j_report_btn');
+            let ee = $(e);
+            let tid = ee.attr("tid");
+            let content = ee.find(".list_item_top");
+            let x = ee.find('.list_item_top a.j_report_btn');
             if (x && x.length > 0) {
-                var kz = x[0].href.match(/tid=(\d+)&/);
+                let kz = x[0].href.match(/tid=(\d+)&/);
                 kz = kz[1];
             }
 
-            var floor = e.getElementsByClassName('pb_floow_load');
+            let floor = e.getElementsByClassName('pb_floow_load');
             if (floor.length > 0) {
-                var text = floor[0].textContent;
-                var url = `https://tieba.baidu.com/t/p/${tid}`;
-                var num = parseInt(text.match(/\d+/));
+                let text = floor[0].textContent;
+                let url = `https://tieba.baidu.com/t/p/${tid}`;
+                let num = parseInt(text.match(/\d+/));
                 content.append(`<div style="text-align:center;background-color: #eee;margin: 8px 0 0 42px;"><a style="padding:12px;display:block;" href="javascript:void(0)" data-url="${url}" class="reply">查看剩余` + num + `条回复</a></div>`);
-                var res = content.find('a.reply');
-                var orgnum = num;
+                let res = content.find('a.reply');
+                let orgnum = num;
                 //console.log(content,res);
                 if (res) {
                     res.forEach(function (v, i) {
-                        var page = 2;
+                        let page = 2;
                         v.addEventListener('click', function () {
-                            var that = this;
+                            let that = this;
 
                             if (num === orgnum) {
-                                var url = this.getAttribute('data-url');
+                                let url = this.getAttribute('data-url');
                                 $.get(url, function (rst) {
-                                    var dom = (new DOMParser()).parseFromString(rst, 'text/html');
-                                    var r = dom.querySelector('.j_floor_panel');
-                                    var lii = r.querySelectorAll('li');
+                                    let dom = (new DOMParser()).parseFromString(rst, 'text/html');
+                                    let r = dom.querySelector('.j_floor_panel');
+                                    let lii = r.querySelectorAll('li');
                                     lii.forEach(function (li, index) {
                                         if (index < 2) {
                                             return;
                                         }
-                                        var username = li.querySelector('.left>div .user_name').outerHTML;
+                                        let username = li.querySelector('.left>div .user_name').outerHTML;
                                         username = username.replace('</a>', ':</a>');
-                                        var s = li.querySelector('.content span');
+                                        let s = li.querySelector('.content span');
                                         s.className = 'floor_content';
-                                        var c = li.querySelector('.content').innerHTML;
-                                        var div = `
+                                        let c = li.querySelector('.content').innerHTML;
+                                        let div = `
         <div class="fmain j_floor_main">
             <div class="floor_footer_item">
             ${username}
@@ -120,7 +116,7 @@
             </div>
         </div>`;
                                         li.innerHTML = div;
-                                        var ll = document.createElement('li');
+                                        let ll = document.createElement('li');
                                         ll.classList.add('list_item_floor');
                                         ll.classList.add('j_list_item_floor');
                                         ll.innerHTML = div;
@@ -136,17 +132,17 @@
                                     }
                                 });
                             } else {
-                                var url = `https://tieba.baidu.com/mo/q//flr?fpn=${page}&kz=${kz}&pid=${tid}&is_ajax=1&has_url_param=0&template=lzl`;
+                                let url = `https://tieba.baidu.com/mo/q//flr?fpn=${page}&kz=${kz}&pid=${tid}&is_ajax=1&has_url_param=0&template=lzl`;
                                 $.get(url, function (res) {
-                                    var ht = (new DOMParser()).parseFromString(res.data.floor_html, 'text/html');
-                                    var lii = ht.querySelectorAll('li');
+                                    let ht = (new DOMParser()).parseFromString(res.data.floor_html, 'text/html');
+                                    let lii = ht.querySelectorAll('li');
                                     lii.forEach(function (li, index) {
-                                        var username = li.querySelector('.left>div .user_name').outerHTML;
+                                        let username = li.querySelector('.left>div .user_name').outerHTML;
                                         username = username.replace('</a>', ':</a>');
-                                        var s = li.querySelector('.content span');
+                                        let s = li.querySelector('.content span');
                                         s.className = 'floor_content';
-                                        var c = li.querySelector('.content').innerHTML;
-                                        var div = `
+                                        let c = li.querySelector('.content').innerHTML;
+                                        let div = `
         <div class="fmain j_floor_main">
             <div class="floor_footer_item">
             ${username}
@@ -154,7 +150,7 @@
             </div>
         </div>`;
                                         li.innerHTML = div;
-                                        var ll = document.createElement('li');
+                                        let ll = document.createElement('li');
                                         ll.classList.add('list_item_floor');
                                         ll.classList.add('j_list_item_floor');
                                         ll.innerHTML = div;
@@ -182,11 +178,11 @@
     }
 
     function lz() {
-        var lz = document.querySelector('span.poster_only');
+        let lz = document.querySelector('span.poster_only');
         if (lz) {
             lz.onclick = null;
-            var h = location.href;
-            var ff = 0;
+            let h = location.href;
+            let ff = 0;
             if (h.indexOf('see_lz=1') > -1) {
                 lz.textContent = '取消只看楼主';
                 h = h.replace('see_lz=1', 'see_lz=0');
@@ -204,10 +200,10 @@
     }
 
     function f(value) {
-        var dt = JSON.parse(value.getAttribute('data-info'));
+        let dt = JSON.parse(value.getAttribute('data-info'));
         if (dt) {
-            var fl = dt.floor_num;
-            var l = document.createElement('span');
+            let fl = dt.floor_num;
+            let l = document.createElement('span');
             l.style.color = 'green';
             l.textContent = fl + '楼';
             if (fl === 1) {
@@ -222,10 +218,10 @@
     }
 
     function check() {
-        var userAgentInfo = navigator.userAgent;
-        var Agents = ["Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod"];
-        var flag = 0;
-        for (var v = 0; v < Agents.length; v++) {
+        let userAgentInfo = navigator.userAgent;
+        let Agents = ["Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod"];
+        let flag = 0;
+        for (let v = 0; v < Agents.length; v++) {
             if (userAgentInfo.indexOf(Agents[v]) > -1) {
                 flag = 1;
                 break;
@@ -238,18 +234,18 @@
         [
             '.frs_daoliu_for_app', '.tl_shadow_for_app_modle', '.footer_logo', '.footer_link_highlight'
         ].forEach(value => {
-            var x = document.querySelector(value);
+            let x = document.querySelector(value);
             if (x) {
                 x.parentNode.removeChild(x)
             }
         });
-        var ads = document.querySelectorAll('li.tl_shadow_for_app');
+        let ads = document.querySelectorAll('li.tl_shadow_for_app');
         if (ads.length > 0) {
-            var url = document.querySelector('.tl_shadow_for_app').parentNode.querySelector('a.j_common').href;
+            let url = document.querySelector('.tl_shadow_for_app').parentNode.querySelector('a.j_common').href;
             ads.forEach(v => {
                 //v.classList.remove('tl_shadow_for_app');
-                var a = v.querySelector('a.j_enter_for_app');
-                var tid = v.getAttribute('data-tid');
+                let a = v.querySelector('a.j_enter_for_app');
+                let tid = v.getAttribute('data-tid');
                 a.href = url.replace(/\/(\d+)\?/.exec(url)[1], tid);
                 a.classList.remove('tl_shadow_for_app');
             })
@@ -271,7 +267,7 @@
             '.img_desc', '.father-cut-recommend-normal-box', '.father-cut-daoliu-normal-box',
             '#diversBanner', '.footer_logo', '.j_footer_link', '.frs_daoliu_for_app'
         ].forEach(value => {
-            var x = document.querySelector(value);
+            let x = document.querySelector(value);
             if (x) {
                 x.parentNode.removeChild(x)
             }
@@ -289,8 +285,12 @@
         })
     }
 
-    if (check()) {
-        var url = location.href;
+    try {
+
+        if (!check()) {
+            return;
+        }
+        let url = location.href;
 
         if (/\/p\/\d+/.test(url) || /\/mo\/(.*)\/m\?kz=\d+/.test(url)) {
             detail();
@@ -298,6 +298,8 @@
         if (/f\?kw=.+/.test(url) || /mo\/q\/m\?word=.+/.test(url) || /\/mo\/(.*)\/m\?kw=/.test(url)) {
             list();
         }
-    }
 
+    } catch (e) {
+        console.log(e)
+    }
 })();
