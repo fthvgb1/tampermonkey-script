@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    http://tampermonkey.net/
-// @version      0.61
+// @version      0.70
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
-// @grant        none
+// @grant        GM.openInTab
+
 // @description 显示手机版贴吧里被隐藏的楼层与翻页按钮
 // ==/UserScript==
 
@@ -250,12 +251,14 @@
                 a.classList.remove('tl_shadow_for_app');
             })
         }
-        //debugger
         let lis = document.querySelectorAll('li.tl_shadow>a[data-thread-type="0"]');
         if (lis.length > 0) {
             lis.forEach(value => {
-                //debugger
-                value.setAttribute('target', '_blank')
+                let url = value.href;
+                value.href = 'javascript:void(0);';
+                value.onclick = (v) => {
+                    GM.openInTab(url, true);
+                }
             })
         }
 
