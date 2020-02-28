@@ -5,7 +5,6 @@
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @grant        GM.openInTab
-
 // @description 显示手机版贴吧里被隐藏的楼层与翻页按钮
 // ==/UserScript==
 
