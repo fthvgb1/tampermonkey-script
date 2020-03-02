@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    http://tampermonkey.net/
-// @version      0.71
+// @version      0.72
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @grant        GM.openInTab
@@ -46,6 +46,15 @@
         gif3(v)
     }
 
+    function delElement(selectors) {
+        selectors.forEach(value => {
+            let x = document.querySelector(value);
+            if (x) {
+                x.parentNode.removeChild(x)
+            }
+        });
+    }
+
     function t() {
         lz();
         $("ul#pblist>li").forEach(function (e, iii) {
@@ -61,10 +70,6 @@
                     });
                     //oo[0].parentElement.outerHTML=`<span class="wrap pbimgwapper">${oo[0].parentElement.innerHTML}</span>`
                 }
-                let zz = e.querySelector('#diversBanner');
-                if (zz) {
-                    zz.parentNode.removeChild(zz);
-                }
 
             }
             let videos = e.querySelectorAll('.video');
@@ -75,6 +80,7 @@
                     video.outerHTML = `<video poster="${img.src}" src="${src}" controls="controls"  style="max-width:100%;min-width:100%"></video>`;
                 });
             }
+            delElement(['#diversBanner', '.j_videoFootDownBtn']);
             gif(e);
 
             let ee = $(e);
@@ -239,14 +245,9 @@
     }
 
     function list() {
-        [
+        delElement([
             '.frs_daoliu_for_app', '.tl_shadow_for_app_modle', '.footer_logo', '.footer_link_highlight'
-        ].forEach(value => {
-            let x = document.querySelector(value);
-            if (x) {
-                x.parentNode.removeChild(x)
-            }
-        });
+        ]);
         let ads = document.querySelectorAll('li.tl_shadow_for_app');
         if (ads.length > 0) {
             let url = document.querySelector('.tl_shadow_for_app').parentNode.querySelector('a.j_common').href;
@@ -277,20 +278,14 @@
             if (value.classList.contains('class_hide_flag')) {
                 value.classList.remove('class_hide_flag');
             }
-
         });
         t();
 
-        [
+        delElement([
             '.img_desc', '.father-cut-recommend-normal-box', '.father-cut-daoliu-normal-box',
             '#diversBanner', '.footer_logo', '.j_footer_link', '.frs_daoliu_for_app',
             '.j_videoFootDownBtn'
-        ].forEach(value => {
-            let x = document.querySelector(value);
-            if (x) {
-                x.parentNode.removeChild(x)
-            }
-        });
+        ]);
 
 
         document.querySelector('.father-cut-pager-class-no-page').classList.remove('father-cut-pager-class-no-page');
