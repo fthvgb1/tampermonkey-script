@@ -67,6 +67,14 @@
                 }
 
             }
+            let videos = e.querySelectorAll('.video');
+            if (videos.length > 0) {
+                videos.forEach(video => {
+                    let src = video.getAttribute('data-vhsrc');
+                    let img = video.querySelector('img');
+                    video.outerHTML = `<video poster="${img.src}" src="${src}" controls="controls"  style="max-width:100%;min-width:100%"></video>`;
+                });
+            }
             gif(e);
 
             let ee = $(e);
@@ -275,7 +283,8 @@
 
         [
             '.img_desc', '.father-cut-recommend-normal-box', '.father-cut-daoliu-normal-box',
-            '#diversBanner', '.footer_logo', '.j_footer_link', '.frs_daoliu_for_app'
+            '#diversBanner', '.footer_logo', '.j_footer_link', '.frs_daoliu_for_app',
+            '.j_videoFootDownBtn'
         ].forEach(value => {
             let x = document.querySelector(value);
             if (x) {
