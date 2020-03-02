@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    http://tampermonkey.net/
-// @version      0.70
+// @version      0.71
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @grant        GM.openInTab
@@ -302,10 +302,10 @@
         }
         let url = location.href;
 
-        if (/\/p\/\d+/.test(url) || /\/mo\/(.*)\/m\?kz=\d+/.test(url)) {
+        if (/\/p\/\d+/.test(url) || /kz=\d+/.test(url)) {
             detail();
         }
-        if (/kw=.+/.test(url) || /mo\/q\/m\?word=.+/.test(url) || /\/mo\/(.*)\/m\?kw=/.test(url)) {
+        if (/kw=.+/.test(url) || /word=.+/.test(url)) {
             list();
         }
 
