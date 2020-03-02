@@ -295,13 +295,21 @@
 
         document.querySelector('.father-cut-pager-class-no-page').classList.remove('father-cut-pager-class-no-page');
 
-
-        $("#list_pager>a").on("click", function () {
-            setTimeout(t, 3000);
+        let list = document.querySelector('ul#pblist');
+        let MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
+        let observer = new MutationObserver((mutations) => {
+            if (mutations.length > 0) {
+                t();
+            }
         });
-        $('.j_pager_input').blur(() => {
-            setTimeout(t, 3000);
-        })
+
+        observer.observe(list, {
+            attributes: true,
+            childList: true,
+            characterData: true
+        });
+
+
     }
 
     try {
