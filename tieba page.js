@@ -253,6 +253,11 @@
     function createTime() {
         let url = location.href.replace('&mo_device=1', '');
         url = decodeURIComponent(url);
+        if (url.indexOf('/mo/') > -1) {
+            let word = /word=(.*?)&/.exec(url)[1];
+            url = url.replace('mo/q/m', 'f').replace(/word=(.*?)&/, 'kw=' + word + '&');
+
+        }
         GM_xmlhttpRequest({
             method: 'GET',
             url: url,
@@ -261,6 +266,7 @@
             },
             //responseType: obj.responseType,
             onload: function (res) {
+
                 let r = (new DOMParser()).parseFromString(res.responseText, 'text/html');
                 let w = r.getElementById('pagelet_html_frs-list/pagelet/thread_list').innerHTML;
                 let ul = w.replace('<!--', '').replace('-->', '');
