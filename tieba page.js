@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    http://tampermonkey.net/
-// @version      0.72
+// @version      0.74
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @grant        GM.openInTab
+// @grant        GM_xmlhttpRequest
 // @description 显示手机版贴吧里被隐藏的楼层与翻页按钮
 // ==/UserScript==
 
@@ -84,6 +85,11 @@
             gif(e);
 
             let ee = $(e);
+            let bt = e.querySelector('.j_nreply_btn');
+            if (bt) {
+
+            }
+
             let tid = ee.attr("tid");
             let content = ee.find(".list_item_top");
             let x = ee.find('.list_item_top a.j_report_btn');
@@ -97,7 +103,7 @@
                 let text = floor[0].textContent;
                 let url = `https://tieba.baidu.com/t/p/${tid}`;
                 let num = parseInt(text.match(/\d+/));
-                content.append(`<div style="text-align:center;background-color: #eee;margin: 8px 0 0 42px;"><a style="padding:12px;display:block;" href="javascript:void(0)" data-url="${url}" class="reply">查看剩余` + num + `条回复</a></div>`);
+                content.append(`<div style="text-align:center;background-color: #eee;width: 50%;margin-left: 30%;"><a style="padding:12px;display:block;" href="javascript:void(0)" data-url="${url}" class="reply">还有` + num + `条回复</a></div>`);
                 let res = content.find('a.reply');
                 let orgnum = num;
                 //console.log(content,res);
@@ -142,7 +148,7 @@
                                         that.parentNode.removeChild(that);
                                     } else {
                                         num -= 8;
-                                        that.innerText = `查看剩余${num}条回复`;
+                                        that.innerText = `还有${num}条回复`;
                                     }
                                 });
                             } else {
@@ -175,7 +181,7 @@
                                     ++page;
                                     if (num > 10) {
                                         num -= 10;
-                                        that.innerText = `查看剩余${num}条回复`;
+                                        that.innerText = `还有${num}条回复`;
                                     } else {
                                         that.parentNode.removeChild(that);
                                     }
@@ -244,6 +250,53 @@
         return flag;
     }
 
+    function createTime() {
+        let url = location.href.replace('&mo_device=1', '');
+        url = decodeURIComponent(url);
+        GM_xmlhttpRequest({
+            method: 'GET',
+            url: url,
+            headers: {
+                "User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36'
+            },
+            //responseType: obj.responseType,
+            onload: function (res) {
+                let r = (new DOMParser()).parseFromString(res.responseText, 'text/html');
+                let w = r.getElementById('pagelet_html_frs-list/pagelet/thread_list').innerHTML;
+                let ul = w.replace('<!--', '').replace('-->', '');
+                let u = document.createElement('div');
+                u.innerHTML = ul;
+                let lis = u.querySelectorAll('li.j_thread_list');
+                if (lis.length > 0) {
+                    lis.forEach(li => {
+                        //debugger
+                        let time = li.querySelector('.is_show_create_time');
+                        if (!time) {
+                            return
+                        }
+                        time = time.textContent;
+                        let tid = li.dataset.tid;
+
+
+                        if (tid !== null || tid !== 'null') {
+                            let tar = document.querySelector('li[data-tid="' + tid + '"] .ti_author_icons');
+                            if (!tar) {
+                                return;
+                            }
+
+                            let d = document.createElement('span');
+                            d.style.marginLeft = '1rem';
+                            d.innerHTML = `<span style="color: #9999b3">${time}</span>`;
+                            tar.appendChild(d)
+                        }
+
+                    })
+                }
+            },
+
+        });
+    }
+
     function list() {
         delElement([
             '.frs_daoliu_for_app', '.tl_shadow_for_app_modle', '.footer_logo', '.footer_link_highlight'
@@ -259,6 +312,24 @@
                 a.classList.remove('tl_shadow_for_app');
             })
         }
+
+        createTime();
+
+
+        let list = document.querySelector('#tlist');
+        let MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
+        let observer = new MutationObserver((mutations) => {
+            if (mutations.length > 0) {
+                createTime();
+            }
+        });
+
+        observer.observe(list, {
+            attributes: true,
+            childList: true,
+            characterData: true
+        });
+
         let lis = document.querySelectorAll('li.tl_shadow>a[data-thread-type="0"]');
         if (lis.length > 0) {
             lis.forEach(value => {
