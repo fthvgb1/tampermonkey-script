@@ -391,10 +391,10 @@
         }
         let url = location.href;
 
-        if (/\/p\/\d+/.test(url) || /kz=\d+/.test(url)) {
+        if (document.querySelector('#pblist')) {
             detail();
         }
-        if (/kw=.+/.test(url) || /word=.+/.test(url)) {
+        if (document.querySelector('#tlist')) {
             list();
         }
 
