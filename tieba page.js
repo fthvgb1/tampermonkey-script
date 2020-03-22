@@ -304,8 +304,14 @@
     }
 
     function list() {
+        let css = document.createElement('style');
+        css.innerText = `
+        #frslistcontent>li:not([data-tid]):not(.tl_gap) { display:none; }
+        `;
+        document.querySelector('head').append(css);
         delElement([
-            '.frs_daoliu_for_app', '.tl_shadow_for_app_modle', '.footer_logo', '.footer_link_highlight'
+            '.frs_daoliu_for_app', '.tl_shadow_for_app_modle', '.footer_logo', '.footer_link_highlight',
+            '.appBottomPromote', '.appPromote',
         ]);
         let ads = document.querySelectorAll('li.tl_shadow_for_app');
         if (ads.length > 0) {
@@ -351,6 +357,11 @@
     }
 
     function detail() {
+        let css = document.createElement('style');
+        css.innerText = `
+        #pblist>li:not(.list_item) { display:none; }
+        `;
+        document.querySelector('head').append(css);
         document.querySelectorAll('ul#pblist>li').forEach(value => {
             if (value.classList.contains('class_hide_flag')) {
                 value.classList.remove('class_hide_flag');
@@ -361,7 +372,7 @@
         delElement([
             '.img_desc', '.father-cut-recommend-normal-box', '.father-cut-daoliu-normal-box',
             '#diversBanner', '.footer_logo', '.j_footer_link', '.frs_daoliu_for_app',
-            '.j_videoFootDownBtn'
+            '.j_videoFootDownBtn', '.appBottomPromote', '.appPromote',
         ]);
 
 
