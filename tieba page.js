@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    http://tampermonkey.net/
-// @version      0.74
+// @version      0.76
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @grant        GM.openInTab
@@ -12,7 +12,7 @@
 
 (function () {
     'use strict';
-
+    let obs;
 
     function gif3(v) {
         let imgs = v.querySelectorAll('img.BDE_Image');
@@ -23,6 +23,9 @@
                 if (s != null) {
                     let x = s.length > 0 ? s[1] : src;
                     img.src = decodeURIComponent(x);
+                    img.setAttribute('data-ss', img.src);
+
+                    img.setAttribute('data-src', src)
                 }
 
             })
@@ -40,7 +43,9 @@
                     let img = document.createElement('img');
                     img.src = (ss);
                     img.className = 'BDE_Image';
-                    value.outerHTML = img.outerHTML;
+                    img.setAttribute('data-src', src);
+                    img.setAttribute('data-ss', ss);
+                    value.outerHTML = `<div class="pb_img_item" data-url="${ss}">${img.outerHTML}</div>`;
                 }
             })
         }
@@ -83,6 +88,14 @@
             }
             delElement(['#diversBanner', '.j_videoFootDownBtn']);
             gif(e);
+
+            document.querySelector('#pblist').addEventListener('click', event => {
+                let t = event.target;
+                if (t.classList.contains('BDE_Image')) {
+                    t.src = t.dataset.src;
+                    obs = t
+                }
+            });
 
             let ee = $(e);
             let bt = e.querySelector('.j_nreply_btn');
@@ -357,10 +370,15 @@
     }
 
     function detail() {
+
+
+        document.querySelector('a[class="ui_button ui_back j_span_back"]').addEventListener('click', event => {
+            obs.src = obs.dataset.ss
+        });
+
+
         let css = document.createElement('style');
-        css.innerText = `
-        #pblist>li:not(.list_item) { display:none; }
-        `;
+        css.innerText = `#pblist>li:not(.list_item) { display:none; } .ui_image_header_bottom { display:none !important; }`;
         document.querySelector('head').append(css);
         document.querySelectorAll('ul#pblist>li').forEach(value => {
             if (value.classList.contains('class_hide_flag')) {
@@ -400,7 +418,6 @@
         if (!check()) {
             return;
         }
-        let url = location.href;
 
         if (document.querySelector('#pblist')) {
             detail();
