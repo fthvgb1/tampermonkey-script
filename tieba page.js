@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    http://tampermonkey.net/
-// @version      0.76
+// @version      0.77
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @grant        GM.openInTab
@@ -61,8 +61,44 @@
         });
     }
 
+    function gp() {
+        let tttid = '';
+        let xxjj = $('html').html();
+        let pp = /tid: (\d+)/.exec(xxjj);
+        tttid = pp[1];
+        let fo_name = /forum_name: "(.*?)"/.exec(xxjj)[1];
+        document.querySelector('#pblist').addEventListener('click', event => {
+            let t = event.target;
+
+            if (t.nodeName !== 'IMG') {
+                return
+            }
+            if (t.classList.contains('BDE_Image')) {
+                t.src = t.dataset.src;
+                obs = t
+            }
+
+            let imgs = $(t).parents('#pb_imgs_div');
+            if (imgs.length > 0) {
+                let ff = decodeURIComponent(t.src).split('/');
+                let c = ff[ff.length - 1].split('.')[0];
+
+                location.href = `https://tieba.baidu.com/mo/q/album?word=${fo_name}&tid=${tttid}}&template=slide_image&img_quality=100&click_url=${c}`;
+
+                event.stopPropagation();
+                event.preventDefault();
+
+            }
+
+
+        }, true);
+    }
+
     function t() {
         lz();
+
+        gp();
+
         $("ul#pblist>li").forEach(function (e, iii) {
             f(e);
             if (iii === 0) {
@@ -89,13 +125,6 @@
             delElement(['#diversBanner', '.j_videoFootDownBtn']);
             gif(e);
 
-            document.querySelector('#pblist').addEventListener('click', event => {
-                let t = event.target;
-                if (t.classList.contains('BDE_Image')) {
-                    t.src = t.dataset.src;
-                    obs = t
-                }
-            });
 
             let ee = $(e);
             let bt = e.querySelector('.j_nreply_btn');
@@ -418,6 +447,8 @@
         if (!check()) {
             return;
         }
+
+        delElement(['.ui_image_header_bottom']);
 
         if (document.querySelector('#pblist')) {
             detail();
