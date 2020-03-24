@@ -480,6 +480,12 @@
                 location.href = '/mo/q/msg';
             }
 
+
+            if (ev.target.tagName === 'A' && ev.target.className === 'item comment itemonly') {
+                ev.stopPropagation();
+                ev.preventDefault();
+            }
+
             if (ev.target.classList.contains('j_new_header_reply')) {
                 F.use('spb/widget/normal_post_list', function (threadList) {
                     let x = new threadList(window.conxx);
@@ -492,6 +498,16 @@
                 location.href = `https://tieba.baidu.com/home/main?un=${name}`;
             }
             if (ev.target.classList.contains('user_name')) {
+                location.href = `https://tieba.baidu.com/home/main?un=${ev.target.innerText}`;
+            }
+            if (ev.target.tagName === 'SPAN' && ev.target.classList.contains('forumname')) {
+                location.href = `https://tieba.baidu.com/f?kw==${ev.target.innerText}&pn=0&`;
+            }
+            if (ev.target.tagName === 'SPAN' && ev.target.classList.contains('createtime')) {
+                ev.stopPropagation();
+                ev.preventDefault();
+            }
+            if (ev.target.tagName === 'H4' && ev.target.classList.contains('title')) {
                 location.href = `https://tieba.baidu.com/home/main?un=${ev.target.innerText}`;
             }
             if (ev.target.classList.contains('icon_tieba_edit')) {
