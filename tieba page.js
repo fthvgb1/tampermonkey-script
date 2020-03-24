@@ -1,12 +1,12 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    http://tampermonkey.net/
-// @version      0.77
+// @version      0.91
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @grant        GM.openInTab
 // @grant        GM_xmlhttpRequest
-// @description 显示手机版贴吧里被隐藏的楼层与翻页按钮
+// @description  显示手机版贴吧里被隐藏的楼层与翻页按钮,回复，顺便拦点儿广告
 // ==/UserScript==
 
 
@@ -96,7 +96,6 @@
 
     function t() {
         lz();
-
         gp();
 
         $("ul#pblist>li").forEach(function (e, iii) {
@@ -294,6 +293,10 @@
 
     function createTime() {
         let url = location.href.replace('&mo_device=1', '');
+
+        if (url[url.length - 1] === '&') {
+            url = url + 'tab=main&'
+        }
         url = decodeURIComponent(url);
         if (url.indexOf('/mo/') > -1) {
             let word = /word=(.*?)&/.exec(url)[1];
@@ -315,6 +318,7 @@
                 let u = document.createElement('div');
                 u.innerHTML = ul;
                 let lis = u.querySelectorAll('li.j_thread_list');
+
                 if (lis.length > 0) {
                     lis.forEach(li => {
                         //debugger
@@ -344,6 +348,7 @@
 
         });
     }
+
 
     function list() {
         delElement([
@@ -400,6 +405,7 @@
             obs.src = obs.dataset.ss
         });
 
+        reply();
 
 
         document.querySelectorAll('ul#pblist>li').forEach(value => {
@@ -435,11 +441,94 @@
 
     }
 
+    function clickControl() {
+        let el = ['list_item_top_name', 'j_new_header_reply', 'list_item_user_wrap', 'user_img', 'user_name', 'icon_tieba_edit'];
+        document.querySelector('body').addEventListener('click', ev => {
+            for (let i in el) {
+                if (ev.target.classList.contains(el[i])) {
+                    ev.stopPropagation();
+                    ev.preventDefault();
+                }
+            }
+            if (ev.target.classList.contains('j_postor_blue_kit_btn_return') || ev.target.classList.contains('j_submit_btn')) {
+                let pages = document.querySelectorAll('#list_pager');
+                if (pages.length > 1) {
+                    let count = pages.length;
+                    pages.forEach(el => {
+                        if (count !== 1) {
+                            --count;
+                            el.parentNode.removeChild(el);
+                        }
+                    })
+                }
+            }
+
+            if (ev.target.tagName === 'svg') {
+                ev.stopPropagation();
+                ev.preventDefault();
+                if (ev.target.innerHTML.indexOf('remind_on') > -1) {
+                    location.href = '/mo/q/msg'
+                }
+                if (ev.target.innerHTML.indexOf('topbar_search') > -1) {
+                    location.href = '/mo/q/searchpage'
+                }
+            }
+
+            if (ev.target.tagName === 'A' && ev.target.classList.contains('notice')) {
+                ev.stopPropagation();
+                ev.preventDefault();
+                location.href = '/mo/q/msg';
+            }
+
+            if (ev.target.classList.contains('j_new_header_reply')) {
+                F.use('spb/widget/normal_post_list', function (threadList) {
+                    let x = new threadList(window.conxx);
+                    x.floorReply(ev);
+                });
+            }
+
+            if (ev.target.classList.contains('user_img')) {
+                let name = $(ev.target).parents('li').find('span.user_name').text();
+                location.href = `https://tieba.baidu.com/home/main?un=${name}`;
+            }
+            if (ev.target.classList.contains('user_name')) {
+                location.href = `https://tieba.baidu.com/home/main?un=${ev.target.innerText}`;
+            }
+            if (ev.target.classList.contains('icon_tieba_edit')) {
+                //todo 发帖 似乎没相关的调用模块？？？
+            }
+            //console.log(ev.target,ev.target.tagName)
+
+        }, true);
+    }
+
+    function reply() {
+        let h = document.querySelector('html').innerHTML;
+        let co = /spb\/widget\/normal_post_list', function \(threadList\) \{            new threadList\((.*?)\}\);/.exec(h);
+        let con = co[1] + '}';
+        let conf = (new Function("return " + con))();
+
+        window.conxx = conf;
+
+        document.querySelectorAll('.j_nreply_btn').forEach(value => {
+            value.addEventListener('click', evt => {
+                evt.preventDefault();
+                evt.stopPropagation();
+                F.use('spb/widget/normal_post_list', function (threadList) {
+                    let x = new threadList(conf);
+                    x.floorReply(evt);
+                });
+
+            })
+        })
+    }
+
     try {
 
         if (!check()) {
             return;
         }
+        clickControl();
         let css = document.createElement('style');
         css.innerText = `
         #pblist>li:not(.list_item) { display:none; }
@@ -447,6 +536,12 @@
         .top-guide-wrap { display:none !important;}
         .ui_image_header_bottom { display:none !important; }
         .open-style { display:none !important;}
+        .daoliu { display:none !important;}
+        .tb-footer-wrap { display:none !important;}
+        .footer-logo { display:none !important;}
+        .footer-version-client { display:none !important;}
+        .footer-title { display:none !important;}
+        .footer-version-client-logo { display:none !important;}
         `;
         document.querySelector('head').append(css);
 
