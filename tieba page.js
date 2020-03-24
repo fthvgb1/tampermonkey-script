@@ -530,7 +530,7 @@
         }
         clickControl();
         let css = document.createElement('style');
-        css.innerText = `
+        css.textContent = `
         #pblist>li:not(.list_item) { display:none; }
         #frslistcontent>li:not([data-tid]):not(.tl_gap) { display:none; }
         .top-guide-wrap { display:none !important;}
