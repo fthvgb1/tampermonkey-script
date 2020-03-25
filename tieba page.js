@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    https://github.com/fthvgb1/tampermonkey-script
-// @version      0.92
+// @version      0.93
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @match        http://tieba.baidu.com/*
@@ -145,7 +145,7 @@
                 let text = floor[0].textContent;
                 let url = `https://tieba.baidu.com/t/p/${tid}`;
                 let num = parseInt(text.match(/\d+/));
-                content.append(`<div style="text-align:center;background-color: #eee;width: 50%;margin-left: 30%;"><a style="padding:12px;display:block;" href="javascript:void(0)" data-url="${url}" class="reply">还有` + num + `条回复</a></div>`);
+                content.append(`<div style="text-align:center;background-color: #eee;width: 50%;margin-left: 30%;"><a style="padding:12px;display:block;" href="javascript:void(0)" data-url="${url}" class="reply">还有${num}条回复</a></div>`);
                 let res = content.find('a.reply');
                 let orgnum = num;
                 //console.log(content,res);
@@ -165,8 +165,9 @@
                                         if (index < 2) {
                                             return;
                                         }
-                                        let username = li.querySelector('.left>div .user_name').outerHTML;
-                                        username = username.replace('</a>', ':</a>');
+                                        let uuu = li.querySelector('.left>div .user_name');
+                                        let username = uuu.outerHTML;
+                                        username = username.replace('</a>', ':</a>').replace('javascript:;', `/home/main?un=${uuu.innerText.replace(/ /g, '')}`);
                                         let s = li.querySelector('.content span');
                                         s.className = 'floor_content';
                                         let c = li.querySelector('.content').innerHTML;
@@ -182,6 +183,7 @@
                                         ll.classList.add('list_item_floor');
                                         ll.classList.add('j_list_item_floor');
                                         ll.innerHTML = div;
+                                        ll.setAttribute('data-info', li.dataset.info);
                                         //console.log(content.find('.flist'))
                                         content.find('.flist')[0].appendChild(ll)
 
@@ -199,8 +201,10 @@
                                     let ht = (new DOMParser()).parseFromString(res.data.floor_html, 'text/html');
                                     let lii = ht.querySelectorAll('li');
                                     lii.forEach(function (li, index) {
-                                        let username = li.querySelector('.left>div .user_name').outerHTML;
-                                        username = username.replace('</a>', ':</a>');
+
+                                        let uuu = li.querySelector('.left>div .user_name');
+                                        let username = uuu.outerHTML;
+                                        username = username.replace('</a>', ':</a>').replace('javascript:;', `/home/main?un=${uuu.innerText.replace(/ /g, '')}`);
                                         let s = li.querySelector('.content span');
                                         s.className = 'floor_content';
                                         let c = li.querySelector('.content').innerHTML;
@@ -216,6 +220,7 @@
                                         ll.classList.add('list_item_floor');
                                         ll.classList.add('j_list_item_floor');
                                         ll.innerHTML = div;
+                                        ll.setAttribute('data-info', li.dataset.info);
                                         //console.log(content.find('.flist'))
                                         content.find('.flist')[0].appendChild(ll)
 
@@ -568,6 +573,8 @@
         .footer-title { display:none !important;}
         .footer-version-client-logo { display:none !important;}
         .client-btn { display:none !important;}
+        .footer_logo { display:none !important;}
+        .footer-version { display:none !important;}
         `;
         document.querySelector('head').append(css);
 
