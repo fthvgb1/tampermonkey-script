@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    https://github.com/fthvgb1/tampermonkey-script
-// @version      0.93
+// @version      0.94
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @match        http://tieba.baidu.com/*
@@ -166,8 +166,9 @@
                                             return;
                                         }
                                         let uuu = li.querySelector('.left>div .user_name');
+                                        let ct = li.querySelector('.user_name + p').innerText;
                                         let username = uuu.outerHTML;
-                                        username = username.replace('</a>', ':</a>').replace('javascript:;', `/home/main?un=${uuu.innerText.replace(/ /g, '')}`);
+                                        username = username.replace('</a>', `</a> : <span style="color: #8fa391">${ct}</span>`).replace('javascript:;', `/home/main?un=${uuu.innerText.replace(/ /g, '')}`);
                                         let s = li.querySelector('.content span');
                                         s.className = 'floor_content';
                                         let c = li.querySelector('.content').innerHTML;
@@ -203,8 +204,9 @@
                                     lii.forEach(function (li, index) {
 
                                         let uuu = li.querySelector('.left>div .user_name');
+                                        let ct = li.querySelector('.user_name + p').innerText;
                                         let username = uuu.outerHTML;
-                                        username = username.replace('</a>', ':</a>').replace('javascript:;', `/home/main?un=${uuu.innerText.replace(/ /g, '')}`);
+                                        username = username.replace('</a>', `</a> : <span style="color: #8fa391">${ct}</span>`).replace('javascript:;', `/home/main?un=${uuu.innerText.replace(/ /g, '')}`);
                                         let s = li.querySelector('.content span');
                                         s.className = 'floor_content';
                                         let c = li.querySelector('.content').innerHTML;
