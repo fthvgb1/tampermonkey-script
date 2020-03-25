@@ -1,12 +1,13 @@
 // ==UserScript==
 // @name         tieba page
-// @namespace    http://tampermonkey.net/
-// @version      0.91
+// @namespace    https://github.com/fthvgb1/tampermonkey-script
+// @version      0.92
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
+// @match        http://tieba.baidu.com/*
 // @grant        GM.openInTab
 // @grant        GM_xmlhttpRequest
-// @description  显示手机版贴吧里被隐藏的楼层与翻页按钮,回复，顺便拦点儿广告
+// @description  显示手机版贴吧里被隐藏的楼层与翻页按钮,回贴，顺便拦点儿广告
 // ==/UserScript==
 
 
@@ -442,7 +443,7 @@
     }
 
     function clickControl() {
-        let el = ['list_item_top_name', 'j_new_header_reply', 'list_item_user_wrap', 'user_img', 'user_name', 'icon_tieba_edit'];
+        let el = ['list_item_top_name', 'j_new_header_reply', 'list_item_user_wrap', 'user_img', 'user_name', 'icon_tieba_edit', 'reply_num', 'for_app_label_text_tag'];
         document.querySelector('body').addEventListener('click', ev => {
             for (let i in el) {
                 if (ev.target.classList.contains(el[i])) {
@@ -450,7 +451,7 @@
                     ev.preventDefault();
                 }
             }
-            if (ev.target.classList.contains('j_postor_blue_kit_btn_return') || ev.target.classList.contains('j_submit_btn')) {
+            if (ev.target.classList.contains('j_postor_blue_kit_btn_return') || ev.target.classList.contains('j_submit_btn') || ev.target.classList.contains('close-btn')) {
                 let pages = document.querySelectorAll('#list_pager');
                 if (pages.length > 1) {
                     let count = pages.length;
@@ -480,7 +481,6 @@
                 location.href = '/mo/q/msg';
             }
 
-
             if (ev.target.tagName === 'A' && ev.target.className === 'item comment itemonly') {
                 ev.stopPropagation();
                 ev.preventDefault();
@@ -495,20 +495,29 @@
 
             if (ev.target.classList.contains('user_img')) {
                 let name = $(ev.target).parents('li').find('span.user_name').text();
-                location.href = `https://tieba.baidu.com/home/main?un=${name}`;
+                location.href = `/home/main?un=${name}`;
             }
+            let ii;
+            if (ev.target.tagName === 'IMG' && (ii = ev.target.parentNode, ii.classList.contains('ti_avatar'))) {
+                location.href = ii.dataset.url;
+            }
+
             if (ev.target.classList.contains('user_name')) {
-                location.href = `https://tieba.baidu.com/home/main?un=${ev.target.innerText}`;
+                location.href = `/home/main?un=${ev.target.innerText}`;
             }
             if (ev.target.tagName === 'SPAN' && ev.target.classList.contains('forumname')) {
-                location.href = `https://tieba.baidu.com/f?kw==${ev.target.innerText}&pn=0&`;
+                location.href = `/f?kw=${ev.target.innerText}&pn=0&`;
             }
-            if (ev.target.tagName === 'SPAN' && ev.target.classList.contains('createtime')) {
+            if (ev.target.tagName === 'SPAN' && (ev.target.classList.contains('createtime') || ev.target.classList.contains('ti_time') || ev.target.classList.contains('ti_author'))) {
+                ev.stopPropagation();
+                ev.preventDefault();
+            }
+            if (ev.target.tagName === 'SPAN' && ev.target.classList.contains('btn_icon')) {
                 ev.stopPropagation();
                 ev.preventDefault();
             }
             if (ev.target.tagName === 'H4' && ev.target.classList.contains('title')) {
-                location.href = `https://tieba.baidu.com/home/main?un=${ev.target.innerText}`;
+                location.href = `/home/main?un=${ev.target.innerText}`;
             }
             if (ev.target.classList.contains('icon_tieba_edit')) {
                 //todo 发帖 似乎没相关的调用模块？？？
@@ -558,6 +567,7 @@
         .footer-version-client { display:none !important;}
         .footer-title { display:none !important;}
         .footer-version-client-logo { display:none !important;}
+        .client-btn { display:none !important;}
         `;
         document.querySelector('head').append(css);
 
