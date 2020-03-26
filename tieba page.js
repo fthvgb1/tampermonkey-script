@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    https://github.com/fthvgb1/tampermonkey-script
-// @version      0.95
+// @version      0.96
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @match        https://tiebac.baidu.com/*
@@ -502,19 +502,30 @@
             }
 
             if (ev.target.classList.contains('user_img')) {
+                ev.stopPropagation();
+                ev.preventDefault();
                 let name = $(ev.target).parents('li').find('span.user_name').text();
                 location.href = `/home/main?un=${name}`;
             }
             let ii;
             if (ev.target.tagName === 'IMG' && (ii = ev.target.parentNode, ii.classList.contains('ti_avatar'))) {
+                ev.stopPropagation();
+                ev.preventDefault();
                 location.href = ii.dataset.url;
             }
 
             if (ev.target.classList.contains('user_name')) {
+                ev.stopPropagation();
+                ev.preventDefault();
                 location.href = `/home/main?un=${ev.target.innerText}`;
             }
             if (ev.target.tagName === 'SPAN' && ev.target.classList.contains('forumname')) {
+                ev.preventDefault(), ev.stopPropagation();
+                if (ev.target.innerText.lastIndexOf('吧') === ev.target.innerText.length - 1) {
+                    ev.target.innerText = ev.target.innerText.substring(0, ev.target.innerText.length - 1)
+                }
                 location.href = `/f?kw=${ev.target.innerText}&pn=0&`;
+
             }
             if (ev.target.tagName === 'SPAN' && (ev.target.classList.contains('createtime') || ev.target.classList.contains('ti_time') || ev.target.classList.contains('ti_author'))) {
                 ev.stopPropagation();
@@ -525,6 +536,8 @@
                 ev.preventDefault();
             }
             if (ev.target.tagName === 'H4' && ev.target.classList.contains('title')) {
+                ev.stopPropagation();
+                ev.preventDefault();
                 location.href = `/home/main?un=${ev.target.innerText}`;
             }
             if (ev.target.classList.contains('icon_tieba_edit')) {
@@ -564,20 +577,7 @@
         clickControl();
         let css = document.createElement('style');
         css.textContent = `
-        #pblist>li:not(.list_item) { display:none; }
-        #frslistcontent>li:not([data-tid]):not(.tl_gap) { display:none; }
-        .top-guide-wrap { display:none !important;}
-        .ui_image_header_bottom { display:none !important; }
-        .open-style { display:none !important;}
-        .daoliu { display:none !important;}
-        .tb-footer-wrap { display:none !important;}
-        .footer-logo { display:none !important;}
-        .footer-version-client { display:none !important;}
-        .footer-title { display:none !important;}
-        .footer-version-client-logo { display:none !important;}
-        .client-btn { display:none !important;}
-        .footer_logo { display:none !important;}
-        .footer-version { display:none !important;}
+        .class_hide_flag{display:block!important;}.father-cut-pager-class-no-page>#list_pager{visibility: visible!important;height: 44px!important;}#glob,body{margin-top: 0px!important;}.father_cut_list_class{padding-bottom: 0px!important;}.father-cut-recommend-normal-box,.father-cut-daoliu-normal-box,.fixed_bar,.pb,.frs,.no_mean,.addbodybottom,.img_desc,.tl_shadow_for_app,.top-guide-wrap,.open-style,.index-feed-cards .hot-topic,.appPromote_wrapper,.ui_image_header_bottom,.videoFooter,#diversBanner,.tb-footer-wrap,.interest-bar,.footer-wrap,.client-btn,.daoliu{display:none!important;}.tl_shadow:not([data-tid]),#pblist>li:not([data-tid]){display:none!important;}.navbar-view{top:24px!important;}.navbar-box{top:44px!important;}        
         `;
         document.querySelector('head').append(css);
 
