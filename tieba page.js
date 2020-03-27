@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    https://github.com/fthvgb1/tampermonkey-script
-// @version      0.96
+// @version      0.97
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @match        https://tiebac.baidu.com/*
@@ -451,6 +451,11 @@
     }
 
     function clickControl() {
+
+        let a = /function\(SignArrow\)\{(.*?)\}\)\;\}\)/.exec($('html').html())[1].replace('new SignArrow', '');
+
+        let _sl = (new Function(a + ';return _sl'))();
+
         let el = ['list_item_top_name', 'j_new_header_reply', 'list_item_user_wrap', 'user_img', 'user_name', 'icon_tieba_edit', 'reply_num', 'for_app_label_text_tag'];
         document.querySelector('body').addEventListener('click', ev => {
             for (let i in el) {
@@ -535,6 +540,30 @@
                 ev.stopPropagation();
                 ev.preventDefault();
             }
+
+            if (ev.target.tagName === 'SPAN' && ev.target.classList.contains('message')) {
+                ev.stopPropagation();
+                ev.preventDefault();
+                location.href = '/mo/q/msg';
+            }
+
+            if (ev.target.classList.contains('j_like')) {
+                ev.stopPropagation();
+                ev.preventDefault();
+                F.use(['sfrs/widget/sign_arrow'], SignArrow => {
+                    let sl = new SignArrow(_sl);
+                    sl.likeHandle();
+                });
+            }
+            if (ev.target.classList.contains('j_sign')) {
+                ev.stopPropagation();
+                ev.preventDefault();
+                F.use(['sfrs/widget/sign_arrow'], SignArrow => {
+                    let sl = new SignArrow(_sl);
+                    sl.signHandle();
+                });
+            }
+
             if (ev.target.tagName === 'H4' && ev.target.classList.contains('title')) {
                 ev.stopPropagation();
                 ev.preventDefault();
@@ -543,7 +572,7 @@
             if (ev.target.classList.contains('icon_tieba_edit')) {
                 //todo 发帖 似乎没相关的调用模块？？？
             }
-            //console.log(ev.target,ev.target.tagName)
+            //console.log(ev.target,ev.target.tagName);
 
         }, true);
     }
