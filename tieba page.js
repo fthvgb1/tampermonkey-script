@@ -450,6 +450,7 @@
 
     }
 
+    let book, sl;
     function clickControl() {
 
         let el = ['list_item_top_name', 'j_new_header_reply', 'list_item_user_wrap', 'user_img', 'user_name', 'icon_tieba_edit', 'reply_num', 'for_app_label_text_tag'];
@@ -549,7 +550,7 @@
                 let a = /function\(SignArrow\)\{(.*?)\}\)\;\}\)/.exec($('html').html())[1].replace('new SignArrow', '');
                 let _sl = (new Function(a + ';return _sl'))();
                 F.use(['sfrs/widget/sign_arrow'], SignArrow => {
-                    let sl = new SignArrow(_sl);
+                    const sl = new SignArrow(_sl);
                     sl.likeHandle();
                 });
             }
@@ -560,9 +561,11 @@
                 let a = /function\(MoreNewSpinner\)\{((.*?)moreNewSpinner\.init\(\);)/.exec($('html').html())[2].replace('new MoreNewSpinner', '');
                 let c = (new Function(a + ';return moreNewSpinner'))();
                 F.use(['spb/widget/more_newspinner'], MoreNewSpinner => {
-                    let moreNewSpinner = new MoreNewSpinner(c);
-                    moreNewSpinner.init();
-                    moreNewSpinner.handleCollect(ev);
+                    if (!book) {
+                        book = new MoreNewSpinner(c);
+                        book.init();
+                    }
+                    book.handleCollect(ev);
                 });
 
             }
@@ -573,7 +576,7 @@
                 let a = /function\(SignArrow\)\{(.*?)\}\)\;\}\)/.exec($('html').html())[1].replace('new SignArrow', '');
                 let _sl = (new Function(a + ';return _sl'))();
                 F.use(['sfrs/widget/sign_arrow'], SignArrow => {
-                    let sl = new SignArrow(_sl);
+                    const sl = new SignArrow(_sl);
                     sl.signHandle();
                 });
             }
