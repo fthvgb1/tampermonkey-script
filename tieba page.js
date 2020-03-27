@@ -452,10 +452,6 @@
 
     function clickControl() {
 
-        let a = /function\(SignArrow\)\{(.*?)\}\)\;\}\)/.exec($('html').html())[1].replace('new SignArrow', '');
-
-        let _sl = (new Function(a + ';return _sl'))();
-
         let el = ['list_item_top_name', 'j_new_header_reply', 'list_item_user_wrap', 'user_img', 'user_name', 'icon_tieba_edit', 'reply_num', 'for_app_label_text_tag'];
         document.querySelector('body').addEventListener('click', ev => {
             for (let i in el) {
@@ -550,14 +546,32 @@
             if (ev.target.classList.contains('j_like')) {
                 ev.stopPropagation();
                 ev.preventDefault();
+                let a = /function\(SignArrow\)\{(.*?)\}\)\;\}\)/.exec($('html').html())[1].replace('new SignArrow', '');
+                let _sl = (new Function(a + ';return _sl'))();
                 F.use(['sfrs/widget/sign_arrow'], SignArrow => {
                     let sl = new SignArrow(_sl);
                     sl.likeHandle();
                 });
             }
+
+            if (ev.target.classList.contains('bookmark_icon')) {
+                ev.stopPropagation();
+                ev.preventDefault();
+                let a = /function\(MoreNewSpinner\)\{((.*?)moreNewSpinner\.init\(\);)/.exec($('html').html())[2].replace('new MoreNewSpinner', '');
+                let c = (new Function(a + ';return moreNewSpinner'))();
+                F.use(['spb/widget/more_newspinner'], MoreNewSpinner => {
+                    let moreNewSpinner = new MoreNewSpinner(c);
+                    moreNewSpinner.init();
+                    moreNewSpinner.handleCollect(ev);
+                });
+
+            }
+
             if (ev.target.classList.contains('j_sign')) {
                 ev.stopPropagation();
                 ev.preventDefault();
+                let a = /function\(SignArrow\)\{(.*?)\}\)\;\}\)/.exec($('html').html())[1].replace('new SignArrow', '');
+                let _sl = (new Function(a + ';return _sl'))();
                 F.use(['sfrs/widget/sign_arrow'], SignArrow => {
                     let sl = new SignArrow(_sl);
                     sl.signHandle();
@@ -572,7 +586,7 @@
             if (ev.target.classList.contains('icon_tieba_edit')) {
                 //todo 发帖 似乎没相关的调用模块？？？
             }
-            //console.log(ev.target,ev.target.tagName);
+            console.log(ev.target, ev.target.tagName);
 
         }, true);
     }
