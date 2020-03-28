@@ -589,7 +589,7 @@
             if (ev.target.classList.contains('icon_tieba_edit')) {
                 //todo 发帖 似乎没相关的调用模块？？？
             }
-            console.log(ev.target, ev.target.tagName);
+            //console.log(ev.target, ev.target.tagName);
 
         }, true);
     }
