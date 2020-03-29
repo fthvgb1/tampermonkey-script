@@ -410,10 +410,21 @@
     function god() {
         let targetNode = document.querySelector("#glob");
         let MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
+        window.onpopstate = e => {
+            if (targetNode.style.visibility === 'hidden' && window.hhxx === 1) {
+                targetNode.style.visibility = 'visible';
+                window.hhxx = 0;
+            }
+        };
+
         let observer = new MutationObserver((mutations) => {
             let m = mutations[0];
-            if (m.type === 'attributes' && m.attributeName === 'style' && m.target.style.display === 'none') {
-                m.target.style.display = 'block';
+            if (m.target.style.display === 'none') {
+                setTimeout(() => {
+                    m.target.style.display = 'block';
+                    m.target.style.visibility = 'hidden';
+                    window.hhxx = 1;
+                }, 50);
             }
         });
         let observerOptions = {
