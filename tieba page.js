@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    https://github.com/fthvgb1/tampermonkey-script
-// @version      0.98
+// @version      0.981
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @match        https://tiebac.baidu.com/*
