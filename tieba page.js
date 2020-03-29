@@ -463,10 +463,7 @@
         let list = document.querySelector('ul#pblist');
         let MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
         let observer = new MutationObserver((mutations) => {
-            if (mutations.length > 0) {
-                console.log(mutations)
-                t();
-            }
+            t();
         });
 
         observer.observe(list, {
