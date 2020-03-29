@@ -422,6 +422,15 @@
         };
         observer.observe(targetNode, observerOptions);
 
+        (new MutationObserver(m => {
+            if (m[0].addedNodes.length > 0) {
+                let n = m[0].addedNodes[0];
+                n.parentNode.removeChild(n);
+            }
+
+        })).observe(document.querySelector('#po_list'), {
+            childList: true,
+        });
 
     }
 
@@ -455,6 +464,7 @@
         let MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
         let observer = new MutationObserver((mutations) => {
             if (mutations.length > 0) {
+                console.log(mutations)
                 t();
             }
         });
@@ -477,18 +487,6 @@
                 if (ev.target.classList.contains(el[i])) {
                     ev.stopPropagation();
                     ev.preventDefault();
-                }
-            }
-            if (ev.target.classList.contains('j_postor_blue_kit_btn_return') || ev.target.classList.contains('j_submit_btn') || ev.target.classList.contains('close-btn')) {
-                let pages = document.querySelectorAll('#list_pager');
-                if (pages.length > 1) {
-                    let count = pages.length;
-                    pages.forEach(el => {
-                        if (count !== 1) {
-                            --count;
-                            el.parentNode.removeChild(el);
-                        }
-                    })
                 }
             }
 
@@ -516,8 +514,7 @@
 
             if (ev.target.classList.contains('j_new_header_reply')) {
                 F.use('spb/widget/normal_post_list', function (threadList) {
-                    let x = new threadList(window.conxx);
-                    x.floorReply(ev);
+                    window.xxLL.floorReply(ev);
                 });
             }
 
@@ -619,14 +616,17 @@
         let conf = (new Function("return " + con))();
 
         window.conxx = conf;
+        window.xxLL = null;
 
         document.querySelectorAll('.j_nreply_btn').forEach(value => {
             value.addEventListener('click', evt => {
                 evt.preventDefault();
                 evt.stopPropagation();
                 F.use('spb/widget/normal_post_list', function (threadList) {
-                    let x = new threadList(conf);
-                    x.floorReply(evt);
+                    if (!window.xxLL) {
+                        window.xxLL = new threadList(conf)
+                    }
+                    window.xxLL.floorReply(evt);
                 });
 
             })
