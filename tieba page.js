@@ -97,9 +97,10 @@
     }
 
 
-    function replayPage(res, el) {
+    function replayPage(res, el, call) {
         let ht = (new DOMParser()).parseFromString(res.data.floor_html, 'text/html');
         let lii = ht.querySelectorAll('li');
+        let x = [];
         lii.forEach(function (li, index) {
             let uuu = li.querySelector('.left>div .user_name');
             let ct = li.querySelector('.user_name + p').innerText;
@@ -122,13 +123,89 @@
             ll.classList.add('j_list_item_floor');
             ll.innerHTML = div;
             ll.setAttribute('data-info', li.dataset.info);
-            el.appendChild(ll);
+            x.push(ll);
         });
+        if (call) {
+            call(x);
+        }
+        x.forEach(v => {
+            el.appendChild(v);
+        });
+
     }
 
+    function tpage(tot, el, call) {
+        tot = parseInt(tot);
+        let d = document.createElement('div');
+        d.classList.add('pagexx');
+        d.style.cssText = 'text-align: center;';
+        let a = document.createElement('a');
+        a.href = 'javascript:void(0)';
+        a.innerText = '<';
+        let i = document.createElement('input');
+        d.append(a);
+        a.style.cssText = `
+        height: 20px;
+    line-height: 20px;
+    display: inline-block;
+    text-align: center;
+    color: #fff;
+    width: 20px;
+    background-color: rgba(0,0,0,.3);
+    `;
+        let r = a.cloneNode(true);
+        a.classList.add('l');
+        [a, r].forEach(v => {
+            v.addEventListener('click', ev => {
+                let r = parseInt(i.dataset.r);
+                if (v.classList.contains('r') && r < tot) {
+                    ppage(r + 1);
+                }
+                if (v.classList.contains('l') && r > 1) {
+                    ppage(r - 1);
+                }
 
-    function f20() {
+            });
+        });
+        d.appendChild(a);
+        d.appendChild(i);
+        d.appendChild(r);
+        el.parentNode.appendChild(d);
+        r.innerText = '>';
+        r.classList.add('r');
+        i.style.width = '60px';
+        i.style.margin = '0 6px';
+        i.style.textAlign = 'center';
+        i.type = 'text';
+        i.value = '1/' + tot;
+        i.dataset.o = tot;
+        i.dataset.r = '1';
 
+        function ppage(page) {
+            i.dataset.r = page;
+            i.type = 'text';
+            i.value = page + '/' + tot;
+            el.innerHTML = '';
+            if (call) {
+                call(page);
+            }
+        }
+
+        i.addEventListener('click', ev => {
+            i.value = '';
+            i.type = 'number';
+            i.step = '1';
+            i.min = '1';
+        });
+        i.addEventListener('blur', ev => {
+            let page = parseInt(i.value);
+            if (page > 0 && page <= tot) {
+                ppage(page);
+            } else {
+                i.type = 'text';
+                i.value = i.dataset.r + '/' + tot;
+            }
+        })
     }
 
     function t() {
@@ -162,7 +239,6 @@
             gif(e);
             let ee = $(e);
             let tid = ee.attr("tid");
-            let content = ee.find(".list_item_top");
             let x = ee.find('.list_item_top a.j_report_btn');
             let kz = 0;
             if (x && x.length > 0) {
@@ -174,31 +250,52 @@
                 let a = floor[0];
                 let text = floor[0].textContent;
                 let url = `/t/p/${tid}`;
-                let num = parseInt(text.match(/\d+/));
+                let num = parseInt(text.match(/\d+/)[0]);
                 a.innerText = `还有${num}条回复`;
                 a.dataset.url = url;
                 a.classList.remove('j_enter_lzl_daoliu');
                 $(a).unbind('click');
                 let orgnum = num;
                 let page = 2;
+                let tot = Math.ceil(orgnum / 10);
                 let el = a.previousElementSibling;
                 a.addEventListener('click', function () {
                     let that = this;
                     if (num === orgnum) {
                         let url = this.getAttribute('data-url');
                         $.get(url, function (rst) {
-                            replayPage({data: {floor_html: rst}}, el);
+                            replayPage({data: {floor_html: rst}}, el, ls => {
+                                ls.splice(0, 2)
+                            });
                             if (num <= 8) {
                                 that.parentNode.removeChild(that);
                             } else {
                                 num -= 8;
                                 that.innerText = `还有${num}条回复`;
+                                if (orgnum > 20) {
+                                    a.style.display = 'none';
+                                    tpage(tot, el, (page) => {
+                                        if (a.style.display !== 'none') {
+                                            a.style.display = 'none';
+                                        }
+                                        let url = `/mo/q//flr?fpn=${page}&kz=${kz}&pid=${tid}&is_ajax=1&has_url_param=0&template=lzl`;
+                                        $.get(url, res => {
+                                            replayPage(res, el);
+                                        })
+                                    });
+                                }
                             }
                         });
                     } else {
                         let url = `/mo/q//flr?fpn=${page}&kz=${kz}&pid=${tid}&is_ajax=1&has_url_param=0&template=lzl`;
                         $.get(url, function (res) {
                             replayPage(res, el);
+                            let i = el.parentNode.querySelector('.pagexx input');
+                            if (i) {
+                                i.dataset.r = `${page}`;
+                                i.type = 'text';
+                                i.value = page + '/' + tot;
+                            }
                             ++page;
                             if (num > 10) {
                                 num -= 10;
@@ -208,7 +305,6 @@
                             }
                         })
                     }
-
                 });
             }
 
@@ -609,7 +705,8 @@
         clickControl();
         let css = document.createElement('style');
         css.textContent = `
-        .class_hide_flag{display:block!important;}.father-cut-pager-class-no-page>#list_pager{visibility: visible!important;height: 44px!important;}#glob,body{margin-top: 0px!important;}.father_cut_list_class{padding-bottom: 0px!important;}.father-cut-recommend-normal-box,.father-cut-daoliu-normal-box,.fixed_bar,.pb,.frs,.no_mean,.addbodybottom,.img_desc,.top-guide-wrap,.open-style,.index-feed-cards .hot-topic,.appPromote_wrapper,.ui_image_header_bottom,.videoFooter,#diversBanner,.tb-footer-wrap,.interest-bar,.footer-wrap,.client-btn,.daoliu{display:none!important;}.tl_shadow:not([data-tid]),#pblist>li:not([data-tid]){display:none!important;}.navbar-view{top:24px!important;}.navbar-box{top:44px!important;}        
+        .class_hide_flag{display:block!important;}.father-cut-pager-class-no-page>#list_pager{visibility: visible!important;height: 44px!important;}#glob,body{margin-top: 0px!important;}.father_cut_list_class{padding-bottom: 0px!important;}.father-cut-recommend-normal-box,.father-cut-daoliu-normal-box,.fixed_bar,.pb,.frs,.no_mean,.addbodybottom,.img_desc,.top-guide-wrap,.open-style,.index-feed-cards .hot-topic,.appPromote_wrapper,.ui_image_header_bottom,.videoFooter,#diversBanner,.tb-footer-wrap,.interest-bar,.footer-wrap,.client-btn,.daoliu{display:none!important;}.tl_shadow:not([data-tid]),#pblist>li:not([data-tid]){display:none!important;}.navbar-view{top:24px!important;}.navbar-box{top:44px!important;} 
+        .footer_logo,.footer-version { display:none!important}       
         `;
         document.querySelector('head').append(css);
 
