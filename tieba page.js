@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    https://github.com/fthvgb1/tampermonkey-script
-// @version      0.983
+// @version      0.984
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @match        https://tiebac.baidu.com/*
@@ -197,6 +197,11 @@
             i.step = '1';
             i.min = '1';
         });
+        i.addEventListener('keyup', ev => {
+            if (ev.key === 'Enter') {
+                i.blur();
+            }
+        });
         i.addEventListener('blur', ev => {
             let page = parseInt(i.value);
             if (page > 0 && page <= tot) {
@@ -281,6 +286,7 @@
                                         let url = `/mo/q//flr?fpn=${page}&kz=${kz}&pid=${tid}&is_ajax=1&has_url_param=0&template=lzl`;
                                         $.get(url, res => {
                                             replayPage(res, el);
+                                            el.scrollIntoView({block: "end", inline: "nearest", behavior: "smooth"});
                                         })
                                     });
                                 }
