@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    https://github.com/fthvgb1/tampermonkey-script
-// @version      0.982
+// @version      0.983
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @match        https://tiebac.baidu.com/*
@@ -85,7 +85,7 @@
                 let ff = decodeURIComponent(t.src).split('/');
                 let c = ff[ff.length - 1].split('.')[0];
 
-                location.href = `https://tieba.baidu.com/mo/q/album?word=${fo_name}&tid=${tttid}}&template=slide_image&img_quality=100&click_url=${c}`;
+                location.href = `/mo/q/album?word=${fo_name}&tid=${tttid}}&template=slide_image&img_quality=100&click_url=${c}`;
 
                 event.stopPropagation();
                 event.preventDefault();
@@ -94,6 +94,41 @@
 
 
         }, true);
+    }
+
+
+    function replayPage(res, el) {
+        let ht = (new DOMParser()).parseFromString(res.data.floor_html, 'text/html');
+        let lii = ht.querySelectorAll('li');
+        lii.forEach(function (li, index) {
+            let uuu = li.querySelector('.left>div .user_name');
+            let ct = li.querySelector('.user_name + p').innerText;
+            let info = JSON.parse(li.dataset.info);
+            let username = uuu.outerHTML;
+            username = username.replace('</a>', `</a> : <span style="color: #8fa391">${ct}</span>`).replace('javascript:;', `/home/main?un=${info.un}`);
+            let s = li.querySelector('.content span');
+            s.className = 'floor_content';
+            let c = li.querySelector('.content').innerHTML;
+            let div = `
+        <div class="fmain j_floor_main">
+            <div class="floor_footer_item">
+            ${username}
+            ${c}
+            </div>
+        </div>`;
+            li.innerHTML = div;
+            let ll = document.createElement('li');
+            ll.classList.add('list_item_floor');
+            ll.classList.add('j_list_item_floor');
+            ll.innerHTML = div;
+            ll.setAttribute('data-info', li.dataset.info);
+            el.appendChild(ll);
+        });
+    }
+
+
+    function f20() {
+
     }
 
     function t() {
@@ -125,14 +160,7 @@
             }
             delElement(['#diversBanner', '.j_videoFootDownBtn']);
             gif(e);
-
-
             let ee = $(e);
-            let bt = e.querySelector('.j_nreply_btn');
-            if (bt) {
-
-            }
-
             let tid = ee.attr("tid");
             let content = ee.find(".list_item_top");
             let x = ee.find('.list_item_top a.j_report_btn');
@@ -143,105 +171,45 @@
             }
             let floor = e.getElementsByClassName('pb_floow_load');
             if (floor.length > 0) {
+                let a = floor[0];
                 let text = floor[0].textContent;
-                let url = `https://tieba.baidu.com/t/p/${tid}`;
+                let url = `/t/p/${tid}`;
                 let num = parseInt(text.match(/\d+/));
-                content.append(`<div style="text-align:center;background-color: #eee;width: 50%;margin-left: 30%;"><a style="padding:12px;display:block;" href="javascript:void(0)" data-url="${url}" class="reply">还有${num}条回复</a></div>`);
-                let res = content.find('a.reply');
+                a.innerText = `还有${num}条回复`;
+                a.dataset.url = url;
+                a.classList.remove('j_enter_lzl_daoliu');
+                $(a).unbind('click');
                 let orgnum = num;
-                //console.log(content,res);
-                if (res) {
-                    res.forEach(function (v, i) {
-                        let page = 2;
-                        v.addEventListener('click', function () {
-                            let that = this;
-
-                            if (num === orgnum) {
-                                let url = this.getAttribute('data-url');
-                                $.get(url, function (rst) {
-                                    let dom = (new DOMParser()).parseFromString(rst, 'text/html');
-                                    let r = dom.querySelector('.j_floor_panel');
-                                    let lii = r.querySelectorAll('li');
-                                    lii.forEach(function (li, index) {
-                                        if (index < 2) {
-                                            return;
-                                        }
-                                        let uuu = li.querySelector('.left>div .user_name');
-                                        let ct = li.querySelector('.user_name + p').innerText;
-                                        let username = uuu.outerHTML;
-                                        username = username.replace('</a>', `</a> : <span style="color: #8fa391">${ct}</span>`).replace('javascript:;', `/home/main?un=${uuu.innerText.replace(/ /g, '')}`);
-                                        let s = li.querySelector('.content span');
-                                        s.className = 'floor_content';
-                                        let c = li.querySelector('.content').innerHTML;
-                                        let div = `
-        <div class="fmain j_floor_main">
-            <div class="floor_footer_item">
-            ${username}
-            ${c}
-            </div>
-        </div>`;
-                                        li.innerHTML = div;
-                                        let ll = document.createElement('li');
-                                        ll.classList.add('list_item_floor');
-                                        ll.classList.add('j_list_item_floor');
-                                        ll.innerHTML = div;
-                                        ll.setAttribute('data-info', li.dataset.info);
-                                        //console.log(content.find('.flist'))
-                                        content.find('.flist')[0].appendChild(ll)
-
-                                    });
-                                    if (num <= 8) {
-                                        that.parentNode.removeChild(that);
-                                    } else {
-                                        num -= 8;
-                                        that.innerText = `还有${num}条回复`;
-                                    }
-                                });
+                let page = 2;
+                let el = a.previousElementSibling;
+                a.addEventListener('click', function () {
+                    let that = this;
+                    if (num === orgnum) {
+                        let url = this.getAttribute('data-url');
+                        $.get(url, function (rst) {
+                            replayPage({data: {floor_html: rst}}, el);
+                            if (num <= 8) {
+                                that.parentNode.removeChild(that);
                             } else {
-                                let url = `https://tieba.baidu.com/mo/q//flr?fpn=${page}&kz=${kz}&pid=${tid}&is_ajax=1&has_url_param=0&template=lzl`;
-                                $.get(url, function (res) {
-                                    let ht = (new DOMParser()).parseFromString(res.data.floor_html, 'text/html');
-                                    let lii = ht.querySelectorAll('li');
-                                    lii.forEach(function (li, index) {
-
-                                        let uuu = li.querySelector('.left>div .user_name');
-                                        let ct = li.querySelector('.user_name + p').innerText;
-                                        let username = uuu.outerHTML;
-                                        username = username.replace('</a>', `</a> : <span style="color: #8fa391">${ct}</span>`).replace('javascript:;', `/home/main?un=${uuu.innerText.replace(/ /g, '')}`);
-                                        let s = li.querySelector('.content span');
-                                        s.className = 'floor_content';
-                                        let c = li.querySelector('.content').innerHTML;
-                                        let div = `
-        <div class="fmain j_floor_main">
-            <div class="floor_footer_item">
-            ${username}
-            ${c}
-            </div>
-        </div>`;
-                                        li.innerHTML = div;
-                                        let ll = document.createElement('li');
-                                        ll.classList.add('list_item_floor');
-                                        ll.classList.add('j_list_item_floor');
-                                        ll.innerHTML = div;
-                                        ll.setAttribute('data-info', li.dataset.info);
-                                        //console.log(content.find('.flist'))
-                                        content.find('.flist')[0].appendChild(ll)
-
-                                    });
-                                    ++page;
-                                    if (num > 10) {
-                                        num -= 10;
-                                        that.innerText = `还有${num}条回复`;
-                                    } else {
-                                        that.parentNode.removeChild(that);
-                                    }
-                                })
+                                num -= 8;
+                                that.innerText = `还有${num}条回复`;
                             }
-
+                        });
+                    } else {
+                        let url = `/mo/q//flr?fpn=${page}&kz=${kz}&pid=${tid}&is_ajax=1&has_url_param=0&template=lzl`;
+                        $.get(url, function (res) {
+                            replayPage(res, el);
+                            ++page;
+                            if (num > 10) {
+                                num -= 10;
+                                that.innerText = `还有${num}条回复`;
+                            } else {
+                                that.parentNode.removeChild(that);
+                            }
                         })
-                    })
-                }
-                floor[0].parentNode.removeChild(floor[0])
+                    }
+
+                });
             }
 
         });
@@ -259,7 +227,6 @@
                 ff = 1;
             }
             lz.addEventListener('click', () => {
-
                 if (ff === 0) {
                     h = h.indexOf('?') < 0 ? h + '?see_lz=1' : h + '&see_lz=1';
                 }
@@ -288,16 +255,7 @@
     }
 
     function check() {
-        let userAgentInfo = navigator.userAgent;
-        let Agents = ["Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod"];
-        let flag = 0;
-        for (let v = 0; v < Agents.length; v++) {
-            if (userAgentInfo.indexOf(Agents[v]) > -1) {
-                flag = 1;
-                break;
-            }
-        }
-        return flag;
+        return navigator.userAgent.toLowerCase().indexOf('mobile') > -1;
     }
 
     function createTime() {
@@ -318,7 +276,6 @@
             headers: {
                 "User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36'
             },
-            //responseType: obj.responseType,
             onload: function (res) {
 
                 let r = (new DOMParser()).parseFromString(res.responseText, 'text/html');
@@ -330,27 +287,27 @@
 
                 if (lis.length > 0) {
                     lis.forEach(li => {
-                        //debugger
                         let time = li.querySelector('.is_show_create_time');
                         if (!time) {
                             return
                         }
                         time = time.textContent;
                         let tid = li.dataset.tid;
-
-
                         if (tid !== null || tid !== 'null') {
                             let tar = document.querySelector('li[data-tid="' + tid + '"] .ti_author_icons');
+                            let ttt = document.querySelector('li[data-tid="' + tid + '"] .ti_time');
                             if (!tar) {
                                 return;
                             }
 
+                            ttt.innerHTML = li.querySelector('span[class="tb_icon_author_rely j_replyer"]').title.split(':')[1] + '&nbsp;&nbsp;' + ttt.innerHTML;
+
                             let d = document.createElement('span');
                             d.style.marginLeft = '1rem';
-                            d.innerHTML = `<span style="color: #9999b3">${time}</span>`;
-                            tar.appendChild(d)
+                            d.style.color = '#9999b3';
+                            d.innerText = time;
+                            tar.appendChild(d);
                         }
-
                     })
                 }
             },
@@ -424,7 +381,7 @@
                     m.target.style.display = 'block';
                     m.target.style.visibility = 'hidden';
                     window.hhxx = 1;
-                }, 50);
+                }, 300);
             }
         });
         let observerOptions = {
@@ -486,7 +443,7 @@
 
     }
 
-    let book, sl;
+    let book;
     function clickControl() {
 
         let el = ['list_item_top_name', 'j_new_header_reply', 'list_item_user_wrap', 'user_img', 'user_name', 'icon_tieba_edit', 'reply_num', 'for_app_label_text_tag'];
@@ -522,6 +479,9 @@
 
             if (ev.target.classList.contains('j_new_header_reply')) {
                 F.use('spb/widget/normal_post_list', function (threadList) {
+                    if (!window.xxLL) {
+                        window.xxLL = new threadList(window.conxx)
+                    }
                     window.xxLL.floorReply(ev);
                 });
             }
@@ -573,7 +533,7 @@
                 let a = /function\(SignArrow\)\{(.*?)\}\)\;\}\)/.exec($('html').html())[1].replace('new SignArrow', '');
                 let _sl = (new Function(a + ';return _sl'))();
                 F.use(['sfrs/widget/sign_arrow'], SignArrow => {
-                    const sl = new SignArrow(_sl);
+                    let sl = new SignArrow(_sl);
                     sl.likeHandle();
                 });
             }
@@ -599,7 +559,7 @@
                 let a = /function\(SignArrow\)\{(.*?)\}\)\;\}\)/.exec($('html').html())[1].replace('new SignArrow', '');
                 let _sl = (new Function(a + ';return _sl'))();
                 F.use(['sfrs/widget/sign_arrow'], SignArrow => {
-                    const sl = new SignArrow(_sl);
+                    let sl = new SignArrow(_sl);
                     sl.signHandle();
                 });
             }
