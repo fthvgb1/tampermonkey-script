@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    https://github.com/fthvgb1/tampermonkey-script
-// @version      0.985
+// @version      0.986
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @match        https://tiebac.baidu.com/*
@@ -569,6 +569,7 @@
     }
 
     let book;
+    let svgss;
     function clickControl() {
 
         let el = ['list_item_top_name', 'j_new_header_reply', 'list_item_user_wrap', 'user_img', 'user_name', 'icon_tieba_edit', 'reply_num', 'for_app_label_text_tag'];
@@ -581,6 +582,9 @@
             }
 
             if (ev.target.tagName === 'svg') {
+                if ([...svgss].indexOf(ev.target.parentNode)) {
+                    return;
+                }
                 ev.stopPropagation();
                 ev.preventDefault();
                 if (ev.target.innerHTML.indexOf('remind_on') > -1) {
@@ -726,16 +730,77 @@
         })
     }
 
+    function fnav() {
+        let d = document.createElement('div');
+        d.style.cssText = `position: fixed;width: 45px;right: 10px;bottom: 50px;`;
+        d.innerHTML = `
+         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+        <path d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"></path>
+    </svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+        <path d="M256 504c137 0 248-111 248-248S393 8 256 8 8 119 8 256s111 248 248 248zm0-448c110.5 0 200 89.5 200 200s-89.5 200-200 200S56 366.5 56 256 145.5 56 256 56zm20 328h-40c-6.6 0-12-5.4-12-12V256h-67c-10.7 0-16-12.9-8.5-20.5l99-99c4.7-4.7 12.3-4.7 17 0l99 99c7.6 7.6 2.2 20.5-8.5 20.5h-67v116c0 6.6-5.4 12-12 12z"></path>
+    </svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+        <path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm-32-316v116h-67c-10.7 0-16 12.9-8.5 20.5l99 99c4.7 4.7 12.3 4.7 17 0l99-99c7.6-7.6 2.2-20.5-8.5-20.5h-67V140c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12z"></path>
+    </svg>
+
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+        <path d="M290.59 192c-20.18 0-106.82 1.98-162.59 85.95V192c0-52.94-43.06-96-96-96-17.67 0-32 14.33-32 32s14.33 32 32 32c17.64 0 32 14.36 32 32v256c0 35.3 28.7 64 64 64h176c8.84 0 16-7.16 16-16v-16c0-17.67-14.33-32-32-32h-32l128-96v144c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16V289.86c-10.29 2.67-20.89 4.54-32 4.54-61.81 0-113.52-44.05-125.41-102.4zM448 96h-64l-64-64v134.4c0 53.02 42.98 96 96 96s96-42.98 96-96V32l-64 64zm-72 80c-8.84 0-16-7.16-16-16s7.16-16 16-16 16 7.16 16 16-7.16 16-16 16zm80 0c-8.84 0-16-7.16-16-16s7.16-16 16-16 16 7.16 16 16-7.16 16-16 16z"></path>
+    </svg>
+        `;
+        let svgs = svgss = d.querySelectorAll('svg');
+        let f = 1;
+
+        function dd() {
+            [svgs[0], svgs[1], svgs[2]].forEach(el => {
+                el.style.display = f === 1 ? 'block' : 'none'
+            });
+            f = f === 1 ? 2 : 1;
+        }
+
+        svgs.forEach((value, key) => {
+
+            if (key !== 3) {
+                value.style.display = 'none';
+            }
+            value.style.fill = 'rgba(77, 74, 210,.3)';
+            value.addEventListener('click', ev => {
+                switch (key) {
+                    case 0:
+                        location.href = '/mo/q/searchpage';
+                        break;
+                    case 1:
+                        window.scrollTo({top: 0, left: 0, behavior: "smooth"});
+                        dd();
+                        break;
+                    case 2:
+                        window.scrollTo({top: document.documentElement.scrollHeight, left: 0, behavior: "smooth"});
+                        dd();
+                        break;
+                    case 3:
+                        dd();
+                        break;
+
+                }
+            });
+        });
+        document.querySelector('body').appendChild(d);
+    }
+
     try {
 
         if (!check()) {
             return;
         }
+        fnav();
         clickControl();
         let css = document.createElement('style');
         css.textContent = `
         .class_hide_flag{display:block!important;}.father-cut-pager-class-no-page>#list_pager{visibility: visible!important;height: 44px!important;}#glob,body{margin-top: 0px!important;}.father_cut_list_class{padding-bottom: 0px!important;}.father-cut-recommend-normal-box,.father-cut-daoliu-normal-box,.fixed_bar,.pb,.frs,.no_mean,.addbodybottom,.img_desc,.top-guide-wrap,.open-style,.index-feed-cards .hot-topic,.appPromote_wrapper,.ui_image_header_bottom,.videoFooter,#diversBanner,.tb-footer-wrap,.interest-bar,.footer-wrap,.client-btn,.daoliu{display:none!important;}.tl_shadow:not([data-tid]),#pblist>li:not([data-tid]){display:none!important;}.navbar-view{top:24px!important;}.navbar-box{top:44px!important;} 
-        .footer_logo,.footer-version { display:none!important}       
+        .footer_logo,.footer-version { display:none!important} 
+        .fr_list .list_item_floor  { padding-top:6px;}
+        .floor_footer_item .user_name { color:#125bc7; }
+        .floor_content a { color:#498bef; }     
         `;
         document.querySelector('head').append(css);
 
