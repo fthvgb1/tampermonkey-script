@@ -462,7 +462,7 @@
                     window.open(url, '_blank');
                 }
                 if ((startX - endX) > 100 && Math.abs(endY - startY) <= 100) {
-                    location.href = document.querySelector('li.tl_shadow>a[data-thread-type="0"]').dataset.url;
+                    location.href = li.querySelector('li.tl_shadow>a[data-thread-type="0"]').dataset.url;
                     //window.open(url,'self')
                 }
             })
