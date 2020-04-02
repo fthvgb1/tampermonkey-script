@@ -440,6 +440,15 @@
         });
     }
 
+    function slio() {
+        let lis = document.querySelectorAll('#frslistcontent>li');
+        lis.forEach(li => {
+            li.addEventListener('touchstart', evt => {
+
+            })
+        })
+    }
+
 
     function list() {
         delElement([
@@ -450,7 +459,6 @@
         if (ads.length > 0) {
             let url = document.querySelector('.tl_shadow_for_app').parentNode.querySelector('a.j_common').href;
             ads.forEach(v => {
-                //v.classList.remove('tl_shadow_for_app');
                 let a = v.querySelector('a.j_enter_for_app');
                 let tid = v.getAttribute('data-tid');
                 a.href = url.replace(/\/(\d+)\?/.exec(url)[1], tid);
@@ -732,7 +740,15 @@
 
     function fnav() {
         let d = document.createElement('div');
-        d.style.cssText = `position: fixed;width: 45px;right: 10px;bottom: 50px;`;
+        let startX;
+        let startY;
+        let sx = document.documentElement.clientWidth;
+        let sy = document.documentElement.clientHeight;
+        let tempX = localStorage.getItem('tiebaPageX');
+        let endX = tempX ? tempX : 10;
+        let tempY = localStorage.getItem('tiebaPageY');
+        let endY = tempX ? tempY : 50;
+        d.style.cssText = `position: fixed;width: 45px;right: ${endX}px;bottom: ${endY}px;z-index:1;`;
         d.innerHTML = `
          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
         <path d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"></path>
@@ -750,6 +766,7 @@
         `;
         let svgs = svgss = d.querySelectorAll('svg');
         let f = 1;
+        let timer = null;
 
         function dd() {
             [svgs[0], svgs[1], svgs[2]].forEach(el => {
@@ -758,10 +775,45 @@
             f = f === 1 ? 2 : 1;
         }
 
+        function drop(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            let touches = e.touches[0];
+            let svg = e.target.parentNode.parentNode;
+            endX = sx - touches.clientX - Math.ceil(svg.offsetWidth / 2);
+            endY = sy - touches.clientY - Math.ceil(svg.offsetHeight / 2);
+            if (endX > sx - svg.offsetWidth) {
+                endX = sx - svg.offsetWidth
+            } else if (endX < 0) {
+                endX = 0;
+            }
+            if (endY > sy - svg.offsetHeight) {
+                endY = sy - svg.offsetHeight;
+            } else if (endY < 0) {
+                endY = 0;
+            }
+            svg.style.right = endX + "px";
+            svg.style.bottom = endY + "px";
+        }
+
         svgs.forEach((value, key) => {
 
             if (key !== 3) {
                 value.style.display = 'none';
+            } else {
+                value.addEventListener('touchstart', ev => {
+                    startX = ev.touches[0].clientX - (value.offsetLeft ? value.offsetLeft : 0);
+                    startY = ev.touches[0].clientY - (value.offsetTop ? value.offsetTop : 0);
+                    timer = setTimeout(() => {
+                        value.addEventListener('touchmove', drop);
+                    }, 600);
+                });
+                value.addEventListener('touchend', ev => {
+                    clearTimeout(timer);
+                    localStorage.setItem('tiebaPageX', endX);
+                    localStorage.setItem('tiebaPageY', endY);
+                    value.removeEventListener('touchmove', drop);
+                })
             }
             value.style.fill = 'rgba(77, 74, 210,.3)';
             value.addEventListener('click', ev => {
