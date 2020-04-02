@@ -442,15 +442,36 @@
 
     function slio() {
         let lis = document.querySelectorAll('#frslistcontent>li');
+        let startX = 0;
+        let endX = 0;
+        let startY = 0;
+        let endY = 0;
         lis.forEach(li => {
             li.addEventListener('touchstart', evt => {
+                startX = evt.changedTouches[0].screenX;
+                startY = evt.changedTouches[0].screenY;
+            });
+            li.addEventListener('touchmove', evt => {
+                endX = evt.changedTouches[0].screenX;
+                endY = evt.changedTouches[0].screenY;
+            });
 
+            li.addEventListener('touchend', evt => {
+                if ((endX - startX) > 100 && Math.abs(endY - startY) <= 100) {
+                    let url = document.querySelector('li.tl_shadow>a[data-thread-type="0"]').href;
+                    window.open(url, '_blank');
+                }
+                if ((startX - endX) > 100 && Math.abs(endY - startY) <= 100) {
+                    let url = document.querySelector('li.tl_shadow>a[data-thread-type="0"]').href;
+                    GM.openInTab(url)
+                }
             })
         })
     }
 
 
     function list() {
+        slio();
         delElement([
             '.frs_daoliu_for_app', '.tl_shadow_for_app_modle', '.footer_logo', '.footer_link_highlight',
             '.appBottomPromote', '.appPromote',
@@ -483,7 +504,7 @@
             characterData: true
         });
 
-        let lis = document.querySelectorAll('li.tl_shadow>a[data-thread-type="0"]');
+        /*let lis = document.querySelectorAll('li.tl_shadow>a[data-thread-type="0"]');
         if (lis.length > 0) {
             lis.forEach(value => {
                 let url = value.href;
@@ -492,7 +513,7 @@
                     GM.openInTab(url, true);
                 }
             })
-        }
+        }*/
 
 
     }
@@ -805,6 +826,8 @@
                     startX = ev.touches[0].clientX - (value.offsetLeft ? value.offsetLeft : 0);
                     startY = ev.touches[0].clientY - (value.offsetTop ? value.offsetTop : 0);
                     timer = setTimeout(() => {
+                        //value.style.touchAction='none';
+                        value.style.fill = 'rgba(210,74,195,0.3)';
                         value.addEventListener('touchmove', drop);
                     }, 600);
                 });
@@ -812,6 +835,10 @@
                     clearTimeout(timer);
                     localStorage.setItem('tiebaPageX', endX);
                     localStorage.setItem('tiebaPageY', endY);
+                    value.style.fill = 'rgba(77, 74, 210,.3)';
+                    //value.style.touchAction='default';
+                    //document.querySelector('body').style.touchAction=null;
+                    //console.log('end');
                     value.removeEventListener('touchmove', drop);
                 })
             }
