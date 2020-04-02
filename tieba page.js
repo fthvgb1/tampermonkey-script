@@ -440,13 +440,13 @@
         });
     }
 
-    function slio() {
-        let lis = document.querySelectorAll('#frslistcontent>li');
+    function slio(els) {
+        //let lis = document.querySelectorAll('#frslistcontent>li');
         let startX = 0;
         let endX = 0;
         let startY = 0;
         let endY = 0;
-        lis.forEach(li => {
+        els.forEach(li => {
             li.addEventListener('touchstart', evt => {
                 startX = evt.changedTouches[0].screenX;
                 startY = evt.changedTouches[0].screenY;
@@ -463,7 +463,6 @@
                 }
                 if ((startX - endX) > 100 && Math.abs(endY - startY) <= 100) {
                     location.href = li.querySelector('li.tl_shadow>a[data-thread-type="0"]').dataset.url;
-                    //window.open(url,'self')
                 }
             })
         })
@@ -471,7 +470,7 @@
 
 
     function list() {
-        slio();
+        slio(document.querySelectorAll('#frslistcontent>li'));
         delElement([
             '.frs_daoliu_for_app', '.tl_shadow_for_app_modle', '.footer_logo', '.footer_link_highlight',
             '.appBottomPromote', '.appPromote',
@@ -495,6 +494,8 @@
         let observer = new MutationObserver((mutations) => {
             if (mutations.length > 0) {
                 createTime();
+                op();
+                slio(document.querySelectorAll('#frslistcontent>li'));
             }
         });
 
@@ -504,19 +505,21 @@
             characterData: true
         });
 
-        let lis = document.querySelectorAll('li.tl_shadow>a[data-thread-type="0"]');
-        if (lis.length > 0) {
-            lis.forEach(value => {
-                let url = value.href;
-                value.href = 'javascript:void(0);';
-                value.dataset.url = url;
-                value.onclick = (v) => {
-                    GM.openInTab(url, true);
-                }
-            })
+        function op() {
+            let lis = document.querySelectorAll('li.tl_shadow>a[data-thread-type="0"]');
+            if (lis.length > 0) {
+                lis.forEach(value => {
+                    let url = value.href;
+                    value.href = 'javascript:void(0);';
+                    value.dataset.url = url;
+                    value.onclick = (v) => {
+                        GM.openInTab(url, true);
+                    }
+                })
+            }
         }
 
-
+        op();
     }
 
     function god() {
