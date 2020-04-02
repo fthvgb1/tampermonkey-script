@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    https://github.com/fthvgb1/tampermonkey-script
-// @version      0.986
+// @version      0.990
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @match        https://tiebac.baidu.com/*
@@ -458,12 +458,12 @@
 
             li.addEventListener('touchend', evt => {
                 if ((endX - startX) > 100 && Math.abs(endY - startY) <= 100) {
-                    let url = document.querySelector('li.tl_shadow>a[data-thread-type="0"]').href;
+                    let url = document.querySelector('li.tl_shadow>a[data-thread-type="0"]').dataset.url;
                     window.open(url, '_blank');
                 }
                 if ((startX - endX) > 100 && Math.abs(endY - startY) <= 100) {
-                    let url = document.querySelector('li.tl_shadow>a[data-thread-type="0"]').href;
-                    GM.openInTab(url)
+                    location.href = document.querySelector('li.tl_shadow>a[data-thread-type="0"]').dataset.url;
+                    //window.open(url,'self')
                 }
             })
         })
@@ -504,16 +504,17 @@
             characterData: true
         });
 
-        /*let lis = document.querySelectorAll('li.tl_shadow>a[data-thread-type="0"]');
+        let lis = document.querySelectorAll('li.tl_shadow>a[data-thread-type="0"]');
         if (lis.length > 0) {
             lis.forEach(value => {
                 let url = value.href;
                 value.href = 'javascript:void(0);';
+                value.dataset.url = url;
                 value.onclick = (v) => {
                     GM.openInTab(url, true);
                 }
             })
-        }*/
+        }
 
 
     }
