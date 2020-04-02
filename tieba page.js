@@ -458,7 +458,7 @@
 
             li.addEventListener('touchend', evt => {
                 if ((endX - startX) > 100 && Math.abs(endY - startY) <= 100) {
-                    let url = document.querySelector('li.tl_shadow>a[data-thread-type="0"]').dataset.url;
+                    let url = li.querySelector('li.tl_shadow>a[data-thread-type="0"]').dataset.url;
                     window.open(url, '_blank');
                 }
                 if ((startX - endX) > 100 && Math.abs(endY - startY) <= 100) {
