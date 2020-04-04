@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    https://github.com/fthvgb1/tampermonkey-script
-// @version      0.992
+// @version      0.993
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @match        https://tiebac.baidu.com/*
@@ -804,7 +804,7 @@
             e.preventDefault();
             e.stopPropagation();
             let touches = e.touches[0];
-            let svg = e.target.parentNode.parentNode;
+            let svg = d;
             endX = sx - touches.clientX - Math.ceil(svg.offsetWidth / 2);
             endY = sy - touches.clientY - Math.ceil(svg.offsetHeight / 2);
             if (endX > sx - svg.offsetWidth) {
@@ -832,7 +832,9 @@
                     timer = setTimeout(() => {
                         //value.style.touchAction='none';
                         value.style.fill = 'rgba(210,74,195,0.3)';
-                        value.addEventListener('touchmove', drop);
+                        value.addEventListener('touchmove', drop, {
+                            passive: false
+                        });
                     }, 600);
                 });
                 value.addEventListener('touchend', ev => {
