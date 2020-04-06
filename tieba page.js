@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    https://github.com/fthvgb1/tampermonkey-script
-// @version      0.993
+// @version      0.994
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @match        https://tiebac.baidu.com/*
@@ -20,7 +20,7 @@
         let imgs = v.querySelectorAll('img.BDE_Image');
         if (imgs.length > 0) {
             imgs.forEach(img => {
-                let src = img.src;
+                let src = img.src.replace('tiebapic', 'imgsrc').replace('tiebapic', 'imgsrc');
                 let s = /&src=(.*)/.exec(src);
                 if (s != null) {
                     let x = s.length > 0 ? s[1] : src;
@@ -38,6 +38,7 @@
         let imgs = v.querySelectorAll('div[data-class="BDE_Image"]');
         if (imgs.length > 0) {
             imgs.forEach(value => {
+                let o = value.getAttribute('data-url').replace('tiebapic', 'imgsrc').replace('tiebapic', 'imgsrc');
                 let src = decodeURIComponent(value.getAttribute('data-url'));
                 let s = /&src=(.*)/.exec(src);
                 if (s != null) {
@@ -45,7 +46,7 @@
                     let img = document.createElement('img');
                     img.src = (ss);
                     img.className = 'BDE_Image';
-                    img.setAttribute('data-src', src);
+                    img.setAttribute('data-src', o);
                     img.setAttribute('data-ss', ss);
                     value.outerHTML = `<div class="pb_img_item" data-url="${ss}">${img.outerHTML}</div>`;
                 }
@@ -424,8 +425,12 @@
                             if (!tar) {
                                 return;
                             }
+                            let ki = li.querySelector('span[class="tb_icon_author_rely j_replyer"]');
+                            if (!ki) {
+                                return;
+                            }
 
-                            ttt.innerHTML = li.querySelector('span[class="tb_icon_author_rely j_replyer"]').title.split(':')[1] + '&nbsp;&nbsp;' + ttt.innerHTML;
+                            ttt.innerHTML = ki.title.split(':')[1] + '&nbsp;&nbsp;' + ttt.innerHTML;
 
                             let d = document.createElement('span');
                             d.style.marginLeft = '1rem';
@@ -458,11 +463,11 @@
 
             li.addEventListener('touchend', evt => {
                 if ((endX - startX) > 100 && Math.abs(endY - startY) <= 100) {
-                    let url = li.querySelector('li.tl_shadow>a[data-thread-type="0"]').dataset.url;
+                    let url = li.querySelector('li.tl_shadow>a.ti_item').dataset.url;
                     window.open(url, '_blank');
                 }
                 if ((startX - endX) > 100 && Math.abs(endY - startY) <= 100) {
-                    location.href = li.querySelector('li.tl_shadow>a[data-thread-type="0"]').dataset.url;
+                    location.href = li.querySelector('li.tl_shadow>a.ti_item').dataset.url;
                 }
             })
         })
@@ -506,7 +511,7 @@
         });
 
         function op() {
-            let lis = document.querySelectorAll('li.tl_shadow>a[data-thread-type="0"]');
+            let lis = document.querySelectorAll('li.tl_shadow>a.ti_item');
             if (lis.length > 0) {
                 lis.forEach(value => {
                     let url = value.href;
@@ -539,6 +544,10 @@
                     m.target.style.display = 'block';
                     m.target.style.visibility = 'hidden';
                     window.hhxx = 1;
+                    let ui = document.querySelector('.ui_slider_hybrid');
+                    if (ui.style.display === 'block') {
+                        ui.style.top = '-44px';
+                    }
                 }, 300);
             }
         });
