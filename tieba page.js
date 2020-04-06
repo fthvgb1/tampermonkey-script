@@ -527,6 +527,10 @@
         op();
     }
 
+    function ft(event) {
+        event.preventDefault();
+    }
+
     function god() {
         let targetNode = document.querySelector("#glob");
         let MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
@@ -534,12 +538,15 @@
             if (targetNode.style.visibility === 'hidden' && window.hhxx === 1) {
                 targetNode.style.visibility = 'visible';
                 window.hhxx = 0;
+                document.querySelector('.ui_slider_hybrid').removeEventListener('touchmove', ft)
+
             }
         };
 
         let observer = new MutationObserver((mutations) => {
             let m = mutations[0];
             if (m.target.style.display === 'none') {
+                document.querySelector('.ui_slider_hybrid').addEventListener('touchmove', ft);
                 setTimeout(() => {
                     m.target.style.display = 'block';
                     m.target.style.visibility = 'hidden';
