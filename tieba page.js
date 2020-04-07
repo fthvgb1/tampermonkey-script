@@ -381,7 +381,8 @@
     }
 
     function check() {
-        return navigator.userAgent.toLowerCase().indexOf('mobile') > -1;
+        let ua = navigator.userAgent.toLowerCase();
+        return ua.indexOf('mobile') > -1 || ua.indexOf('phone');
     }
 
     function createTime() {
