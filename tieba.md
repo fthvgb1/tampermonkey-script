@@ -1,6 +1,6 @@
 ## tieba page
 
-[脚本安装地址](https://greasyfork.org/zh-CN/scripts/377761-refuse-tieba-app-js)
+[脚本安装地址](https://greasyfork.org/zh-CN/scripts/390510-tieba-page)
 
 
 ### 介绍 
