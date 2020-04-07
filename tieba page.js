@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    https://github.com/fthvgb1/tampermonkey-script
-// @version      0.994
+// @version      0.995
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @match        https://tiebac.baidu.com/*
@@ -16,44 +16,32 @@
     'use strict';
     let obs;
 
-    function gif3(v) {
-        let imgs = v.querySelectorAll('img.BDE_Image');
+    function jpg(v) {
+        let imgs = v.querySelectorAll('[data-class="BDE_Image"]:not([data-type="gif"])');
         if (imgs.length > 0) {
-            imgs.forEach(img => {
-                let src = img.src.replace('tiebapic', 'imgsrc').replace('tiebapic', 'imgsrc');
-                let s = /&src=(.*)/.exec(src);
-                if (s != null) {
-                    let x = s.length > 0 ? s[1] : src;
-                    img.src = decodeURIComponent(x);
-                    img.setAttribute('data-ss', img.src);
-
-                    img.setAttribute('data-src', src)
-                }
-
+            //debugger
+            imgs.forEach(value => {
+                let h = value.dataset.url.replace('tiebapic', 'imgsrc').replace('tiebapic', 'imgsrc');
+                let tmp = h.split('&src=')[1];
+                value.outerHTML = `<img  data-url="${tmp}" class="BDE_Image" src="${h}">`;
             })
         }
     }
 
     function gif(v) {
-        let imgs = v.querySelectorAll('div[data-class="BDE_Image"]');
+        let imgs = v.querySelectorAll('[data-type="gif"]');
         if (imgs.length > 0) {
             imgs.forEach(value => {
-                let o = value.getAttribute('data-url').replace('tiebapic', 'imgsrc').replace('tiebapic', 'imgsrc');
-                let src = decodeURIComponent(value.getAttribute('data-url'));
-                let s = /&src=(.*)/.exec(src);
-                if (s != null) {
-                    let ss = s[1];
-                    let img = document.createElement('img');
-                    img.src = (ss);
-                    img.className = 'BDE_Image';
-                    img.setAttribute('data-src', o);
-                    img.setAttribute('data-ss', ss);
-                    value.outerHTML = `<div class="pb_img_item" data-url="${ss}">${img.outerHTML}</div>`;
-                }
+                let h = value.dataset.url.replace('tiebapic', 'imgsrc').replace('tiebapic', 'imgsrc');
+                let url = h.split('&src=')[1];
+                let ssr = decodeURIComponent(url);
+                let x = ssr.split('/');
+                let id = x[x.length - 1];
+                value.outerHTML = `<div class="pb_img_item" data-url="${h}"><img data-src="${h}" data-url="${id}" onclick="this.src=this.dataset.src;" class="BDE_Image" src="${ssr}" alt="gif"></div>`;
             })
         }
-        gif3(v)
     }
+
 
     function delElement(selectors) {
         selectors.forEach(value => {
@@ -75,10 +63,6 @@
 
             if (t.nodeName !== 'IMG') {
                 return
-            }
-            if (t.classList.contains('BDE_Image')) {
-                t.src = t.dataset.src;
-                obs = t
             }
 
             let imgs = $(t).parents('#pb_imgs_div');
@@ -265,6 +249,7 @@
             }
             delElement(['#diversBanner', '.j_videoFootDownBtn']);
             gif(e);
+            jpg(e);
             let ee = $(e);
             let tid = ee.attr("tid");
             let x = ee.find('.list_item_top a.j_report_btn');
@@ -383,6 +368,47 @@
     function check() {
         let ua = navigator.userAgent.toLowerCase();
         return ua.indexOf('mobile') > -1 || ua.indexOf('phone');
+    }
+
+    function p() {
+        let c = document.querySelector('.slide_frame');
+        let MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
+        let observer = new MutationObserver((mutations) => {
+            mutations.forEach(item => {
+                if (item.addedNodes.length > 0) {
+                    item.addedNodes.forEach(node => {
+                        let img = node.querySelector('img');
+                        if (img) {
+                            let tmp = img.src.split('&src=');
+                            let src = img.src;
+                            if (tmp.length > 1) {
+                                let newSrc = decodeURIComponent(tmp[1]);
+                                img.src = newSrc;
+                                let i = document.querySelector(`img[data-url="${tmp[1]}"]`);
+                                if (i && i.src !== newSrc) {
+                                    i.src = newSrc;
+                                    i.addEventListener('click', evt => {
+                                        i.src = src;
+                                    });
+                                }
+
+                            } else {
+                                let x = img.src.split('/');
+                                let u = x[x.length - 1];
+                                let i = document.querySelector(`img[data-url="${u}"]`);
+                                if (i && i.src !== img.src) {
+                                    i.src = img.src;
+                                }
+                            }
+                        }
+                    })
+                }
+            })
+        });
+
+        observer.observe(c, {
+            childList: true,
+        });
     }
 
     function createTime() {
@@ -506,9 +532,7 @@
         });
 
         observer.observe(list, {
-            attributes: true,
             childList: true,
-            characterData: true
         });
 
         function op() {
@@ -577,16 +601,11 @@
 
     }
 
+
     function detail() {
-
         god();
-        document.querySelector('a[class="ui_button ui_back j_span_back"]').addEventListener('click', event => {
-            obs.src = obs.dataset.ss
-        });
-
+        p();
         reply();
-
-
         document.querySelectorAll('ul#pblist>li').forEach(value => {
             if (value.classList.contains('class_hide_flag')) {
                 value.classList.remove('class_hide_flag');
@@ -610,9 +629,7 @@
         });
 
         observer.observe(list, {
-            attributes: true,
-            childList: true,
-            characterData: true
+            childList: true
         });
 
 
