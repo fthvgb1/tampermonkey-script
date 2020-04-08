@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    https://github.com/fthvgb1/tampermonkey-script
-// @version      0.995
+// @version      0.996
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @match        https://tiebac.baidu.com/*
@@ -19,11 +19,10 @@
     function jpg(v) {
         let imgs = v.querySelectorAll('[data-class="BDE_Image"]:not([data-type="gif"])');
         if (imgs.length > 0) {
-            //debugger
             imgs.forEach(value => {
                 let h = value.dataset.url.replace('tiebapic', 'imgsrc').replace('tiebapic', 'imgsrc');
                 let tmp = h.split('&src=')[1];
-                value.outerHTML = `<img  data-url="${tmp}" class="BDE_Image" src="${h}">`;
+                value.outerHTML = `<div class="pb_img_item" data-url="${h}"><img  data-url="${tmp}" class="BDE_Image" src="${h}"></div>`;
             })
         }
     }
@@ -51,36 +50,6 @@
             }
         });
     }
-
-    function gp() {
-        let tttid = '';
-        let xxjj = $('html').html();
-        let pp = /tid: (\d+)/.exec(xxjj);
-        tttid = pp[1];
-        let fo_name = /forum_name: "(.*?)"/.exec(xxjj)[1];
-        document.querySelector('#pblist').addEventListener('click', event => {
-            let t = event.target;
-
-            if (t.nodeName !== 'IMG') {
-                return
-            }
-
-            let imgs = $(t).parents('#pb_imgs_div');
-            if (imgs.length > 0) {
-                let ff = decodeURIComponent(t.src).split('/');
-                let c = ff[ff.length - 1].split('.')[0];
-
-                location.href = `/mo/q/album?word=${fo_name}&tid=${tttid}}&template=slide_image&img_quality=100&click_url=${c}`;
-
-                event.stopPropagation();
-                event.preventDefault();
-
-            }
-
-
-        }, true);
-    }
-
 
     function replayPage(res, el, call) {
         let ht = (new DOMParser()).parseFromString(res.data.floor_html, 'text/html');
@@ -222,20 +191,31 @@
 
     function t() {
         lz();
-        gp();
 
         $("ul#pblist>li").forEach(function (e, iii) {
             f(e);
             if (iii === 0) {
-                let oo = e.querySelectorAll('.pb_img_item');
-                if (oo.length > 0) {
-                    oo.forEach(value => {
-                        if (value.getAttribute('data-url')) {
-                            value.setAttribute('data-class', 'BDE_Image');
-                            value.setAttribute('src', value.getAttribute('data-url'));
-                        }
+                let f = e.querySelector('#pb_imgs_div');
+                if (f) {
+                    let dd = [];
+                    f.querySelectorAll('#pb_imgs_div>div').forEach(d => {
+                        let div = document.createElement('div');
+                        div.dataset.url = d.dataset.url;
+                        div.dataset.class = 'BDE_Image';
+                        dd.push(div);
                     });
-                    //oo[0].parentElement.outerHTML=`<span class="wrap pbimgwapper">${oo[0].parentElement.innerHTML}</span>`
+                    let pb = document.createElement('div');
+                    dd.forEach(v => {
+                        pb.appendChild(v);
+                    });
+                    let pp = document.querySelector('#pb_imgs');
+                    if (pp) {
+                        let parentNode = pp.parentElement;
+                        pb.className = 'pb_less_imgs';
+                        pb.id = 'pb_less_imgs';
+                        parentNode.insertBefore(pb, pp);
+                        parentNode.removeChild(pp);
+                    }
                 }
 
             }
