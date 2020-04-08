@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    https://github.com/fthvgb1/tampermonkey-script
-// @version      0.996
+// @version      0.997
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @match        https://tiebac.baidu.com/*
@@ -347,7 +347,7 @@
 
     function check() {
         let ua = navigator.userAgent.toLowerCase();
-        return ua.indexOf('mobile') > -1 || ua.indexOf('phone');
+        return ua.indexOf('mobile') > -1 || ua.indexOf('phone') > -1;
     }
 
     function p() {
