@@ -37,7 +37,7 @@
                 let ssr = decodeURIComponent(url);
                 let x = ssr.split('/');
                 let id = x[x.length - 1];
-                value.outerHTML = `<div class="pb_img_item" data-url="${h}"><img data-src="${h}" data-url="${id}" onclick="this.src=this.dataset.src;" class="BDE_Image" src="${ssr}" alt="gif"></div>`;
+                value.outerHTML = `<div class="pb_img_item" data-url="${h}"><img data-src="${h}" data-url="${id}" data-type="gif" onclick="this.src=this.dataset.src;" class="BDE_Image" src="${ssr}" alt="gif"></div>`;
             })
         }
     }
@@ -410,8 +410,14 @@
                                 let x = img.src.split('/');
                                 let u = x[x.length - 1];
                                 let i = document.querySelector(`img[data-url="${u}"]`);
-                                if (i && i.src !== img.src) {
+
+                                if (i && i.src !== img.src && i.dataset.type === 'gif') {
                                     i.src = img.src;
+                                } else if (i && i.src !== img.src && !i.dataset.type) {
+                                    i.src = img.src;
+                                    i.addEventListener('click', evt => {
+                                        i.src = i.parentNode.dataset.url;
+                                    });
                                 }
                             }
                         }
