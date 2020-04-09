@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    https://github.com/fthvgb1/tampermonkey-script
-// @version      0.997
+// @version      0.998
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @match        https://tiebac.baidu.com/*
@@ -17,11 +17,12 @@
     let obs;
 
     function jpg(v) {
-        let imgs = v.querySelectorAll('[data-class="BDE_Image"]:not([data-type="gif"])');
+        let imgs = v.querySelectorAll('.pb_img_item:not([data-type="gif"]),[data-class="BDE_Image"]:not([data-type="gif"])');
         if (imgs.length > 0) {
             imgs.forEach(value => {
                 let h = value.dataset.url.replace('tiebapic', 'imgsrc').replace('tiebapic', 'imgsrc');
-                let tmp = h.split('&src=')[1];
+                let tmp = decodeURIComponent(h.split('&src=')[1]).split('/');
+                tmp = tmp[tmp.length - 1];
                 value.outerHTML = `<div class="pb_img_item" data-url="${h}"><img  data-url="${tmp}" class="BDE_Image" src="${h}"></div>`;
             })
         }
@@ -189,35 +190,67 @@
         return result;
     }
 
+    function ab(e) {
+        let f = e.querySelector('#pb_imgs_div');
+        if (f) {
+            let dd = [];
+            let num = e.querySelector('img.pic_icon').parentElement.innerText.replace('图', '');
+            num = parseInt(num);
+            f.querySelectorAll('#pb_imgs_div>div').forEach((d, i) => {
+                let div = document.createElement('div');
+                div.dataset.url = d.dataset.url;
+                div.dataset.class = 'BDE_Image';
+                dd.push(div);
+            });
+            if (num > 3) {
+                let pic = decodeURIComponent(dd[0].dataset.url).split('/');
+                pic = pic[pic.length - 1].split('.')[0];
+                let word = document.querySelector('a.post_title_text').innerText.replace('吧', '');
+                let kz = document.querySelector('html').innerHTML.match(/kz: "(\d+)"/)[1];
+                let width = Math.min(window.innerHeight, window.innerWidth) * 3;
+                let url = `/mo/q/album?word=${word}&tid=${kz}&pic_id=${pic}&see_lz=1&img_quality=100&direction=2&img_width=${width}&img_height=2000`;
+                $.ajax({
+                    url: url,
+                    async: false,
+                    dataType: 'json',
+                    success: res => {
+                        let imgs = res.data.images;
+                        imgs.splice(0, 2);
+                        imgs.forEach((img, i) => {
+                            if (i > num - 3) {
+                                return;
+                            }
+                            let div = document.createElement('div');
+                            div.dataset.url = img.url.replace('&amp;src=', '&src=');
+                            div.dataset.class = 'BDE_Image';
+                            dd.push(div);
+                        })
+                    }
+                });
+
+            }
+            let pb = document.createElement('div');
+            dd.forEach(v => {
+                pb.appendChild(v);
+            });
+            let pp = document.querySelector('#pb_imgs');
+            if (pp) {
+                let parentNode = pp.parentElement;
+                pb.className = 'pb_less_imgs';
+                pb.id = 'pb_less_imgs';
+                parentNode.insertBefore(pb, pp);
+                parentNode.removeChild(pp);
+            }
+        }
+    }
+
     function t() {
         lz();
 
         $("ul#pblist>li").forEach(function (e, iii) {
             f(e);
             if (iii === 0) {
-                let f = e.querySelector('#pb_imgs_div');
-                if (f) {
-                    let dd = [];
-                    f.querySelectorAll('#pb_imgs_div>div').forEach(d => {
-                        let div = document.createElement('div');
-                        div.dataset.url = d.dataset.url;
-                        div.dataset.class = 'BDE_Image';
-                        dd.push(div);
-                    });
-                    let pb = document.createElement('div');
-                    dd.forEach(v => {
-                        pb.appendChild(v);
-                    });
-                    let pp = document.querySelector('#pb_imgs');
-                    if (pp) {
-                        let parentNode = pp.parentElement;
-                        pb.className = 'pb_less_imgs';
-                        pb.id = 'pb_less_imgs';
-                        parentNode.insertBefore(pb, pp);
-                        parentNode.removeChild(pp);
-                    }
-                }
-
+                ab(e);
             }
             let videos = e.querySelectorAll('.video');
             if (videos.length > 0) {
@@ -364,7 +397,8 @@
                             if (tmp.length > 1) {
                                 let newSrc = decodeURIComponent(tmp[1]);
                                 img.src = newSrc;
-                                let i = document.querySelector(`img[data-url="${tmp[1]}"]`);
+                                let tt = newSrc.split('/');
+                                let i = document.querySelector(`img[data-url="${tt[tt.length - 1]}"]`);
                                 if (i && i.src !== newSrc) {
                                     i.src = newSrc;
                                     i.addEventListener('click', evt => {
