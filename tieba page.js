@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    https://github.com/fthvgb1/tampermonkey-script
-// @version      0.999
+// @version      1.000
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @match        https://tiebac.baidu.com/*
@@ -215,9 +215,9 @@
                     dataType: 'json',
                     success: res => {
                         let imgs = res.data.images;
-                        imgs.splice(0, 2);
+                        imgs.splice(0, 3);
                         imgs.forEach((img, i) => {
-                            if (i > num - 3) {
+                            if (i > num - 4) {
                                 return;
                             }
                             let div = document.createElement('div');
