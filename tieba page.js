@@ -17,6 +17,12 @@
     let obs;
 
     function jpg(v) {
+        let fimgs = v.querySelectorAll('span[class="wrap pbimgwapper"]>img.BDE_Image');
+        if (fimgs.length > 0) {
+            fimgs.forEach(img => {
+                img.src = img.src.replace('tiebapic', 'imgsrc').replace('tiebapic', 'imgsrc');
+            })
+        }
         let imgs = v.querySelectorAll('.pb_img_item:not([data-type="gif"]),[data-class="BDE_Image"]:not([data-type="gif"])');
         if (imgs.length > 0) {
             imgs.forEach(value => {
