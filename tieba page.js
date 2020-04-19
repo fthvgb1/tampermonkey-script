@@ -14,8 +14,6 @@
 
 (function () {
     'use strict';
-    let obs;
-
     function jpg(v) {
         let fimgs = v.querySelectorAll('span[class="wrap pbimgwapper"]>img.BDE_Image');
         if (fimgs.length > 0) {
@@ -29,7 +27,7 @@
                 let h = value.dataset.url.replace('tiebapic', 'imgsrc').replace('tiebapic', 'imgsrc');
                 let tmp = decodeURIComponent(h.split('&src=')[1]).split('/');
                 tmp = tmp[tmp.length - 1];
-                value.outerHTML = `<div class="pb_img_item" data-url="${h}"><img  data-url="${tmp}" class="BDE_Image" src="${h}"></div>`;
+                value.outerHTML = `<div class="pb_img_item" data-url="${h}"><img  data-url="${tmp}" class="BDE_Image" src="${h}" alt=""></div>`;
             })
         }
     }
@@ -47,7 +45,6 @@
             })
         }
     }
-
 
     function delElement(selectors) {
         selectors.forEach(value => {
@@ -526,7 +523,6 @@
         })
     }
 
-
     function list() {
         slio(document.querySelectorAll('#frslistcontent>li'));
         delElement([
@@ -627,7 +623,6 @@
 
     }
 
-
     function detail() {
         god();
         p();
@@ -661,8 +656,8 @@
 
     }
 
-    let book;
-    let svgss;
+    let book, svgss;
+
     function clickControl() {
 
         let el = ['list_item_top_name', 'j_new_header_reply', 'list_item_user_wrap', 'user_img', 'user_name', 'icon_tieba_edit', 'reply_num', 'for_app_label_text_tag'];
