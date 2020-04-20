@@ -218,13 +218,16 @@
                     dataType: 'json',
                     success: res => {
                         let imgs = res.data.images;
-                        imgs.splice(0, 3);
+                        dd = []
                         imgs.forEach((img, i) => {
-                            if (i > num - 4) {
+                            if (i > num - 1) {
                                 return;
                             }
                             let div = document.createElement('div');
                             div.dataset.url = img.url.replace('&amp;src=', '&src=');
+                            if (div.dataset.url.indexOf('&src') < 0) {
+                                div.dataset.url += '?&src=' + div.dataset.url;
+                            }
                             div.dataset.class = 'BDE_Image';
                             dd.push(div);
                         })
