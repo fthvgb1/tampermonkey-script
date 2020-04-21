@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
-// @namespace    https://github.com/fthvgb1/tampermonkey-script
-// @version      1.000
+// @namespace    http://tampermonkey.net/
+// @version      0.999
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @match        https://tiebac.baidu.com/*
@@ -516,11 +516,11 @@
 
             li.addEventListener('touchend', evt => {
                 if ((endX - startX) > 100 && Math.abs(endY - startY) <= 100) {
-                    let url = li.querySelector('li.tl_shadow>a.ti_item').dataset.url;
+                    let url = li.querySelector('li.tl_shadow>a.ti_item').href;
                     window.open(url, '_blank');
                 }
                 if ((startX - endX) > 100 && Math.abs(endY - startY) <= 100) {
-                    location.href = li.querySelector('li.tl_shadow>a.ti_item').dataset.url;
+                    GM.openInTab(li.querySelector('li.tl_shadow>a.ti_item').href, true);
                 }
             })
         })
@@ -551,7 +551,6 @@
         let observer = new MutationObserver((mutations) => {
             if (mutations.length > 0) {
                 createTime();
-                op();
                 slio(document.querySelectorAll('#frslistcontent>li'));
             }
         });
@@ -559,22 +558,6 @@
         observer.observe(list, {
             childList: true,
         });
-
-        function op() {
-            let lis = document.querySelectorAll('li.tl_shadow>a.ti_item');
-            if (lis.length > 0) {
-                lis.forEach(value => {
-                    let url = value.href;
-                    value.href = 'javascript:void(0);';
-                    value.dataset.url = url;
-                    value.onclick = (v) => {
-                        GM.openInTab(url, true);
-                    }
-                })
-            }
-        }
-
-        op();
     }
 
     function ft(event) {
