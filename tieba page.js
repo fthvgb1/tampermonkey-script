@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    http://tampermonkey.net/
-// @version      1.000
+// @version      1.001
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @match        https://tiebac.baidu.com/*
@@ -925,8 +925,8 @@
         .class_hide_flag{display:block!important;}.father-cut-pager-class-no-page>#list_pager{visibility: visible!important;height: 44px!important;}#glob,body{margin-top: 0px!important;}.father_cut_list_class{padding-bottom: 0px!important;}.father-cut-recommend-normal-box,.father-cut-daoliu-normal-box,.fixed_bar,.pb,.frs,.no_mean,.addbodybottom,.img_desc,.top-guide-wrap,.open-style,.index-feed-cards .hot-topic,.appPromote_wrapper,.ui_image_header_bottom,.videoFooter,#diversBanner,.tb-footer-wrap,.interest-bar,.footer-wrap,.client-btn,.daoliu{display:none!important;}.tl_shadow:not([data-tid]),#pblist>li:not([data-tid]){display:none!important;}.navbar-view{top:24px!important;}.navbar-box{top:44px!important;} 
         .footer_logo,.footer-version { display:none!important} 
         .fr_list .list_item_floor  { padding-top:6px;}
-        .floor_footer_item .user_name { color:#125bc7; }
-        .floor_content a { color:#498bef; }     
+        .floor_footer_item .user_name,.floor_footer_item .user_name:visited { color:#125bc7; }
+        .floor_content a,.floor_content a:visited { color:#498bef; }    
         `;
         document.querySelector('head').append(css);
 
