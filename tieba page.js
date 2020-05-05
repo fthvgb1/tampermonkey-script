@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    https://github.com/fthvgb1/tampermonkey-script
-// @version      1.000
+// @version      1.002
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @match        https://tiebac.baidu.com/*
@@ -96,7 +96,7 @@
         tot = parseInt(tot);
         let d = document.createElement('div');
         d.classList.add('pagexx');
-        d.style.cssText = 'text-align: center;';
+        d.style.cssText = 'text-align: center;margin:5px 0 2px';
         let a = document.createElement('a');
         a.href = 'javascript:void(0)';
         a.innerText = '<';
@@ -304,7 +304,7 @@
                             } else {
                                 num -= 8;
                                 that.innerText = `还有${num}条回复`;
-                                if (orgnum > 20) {
+                                if (orgnum > 18) {
                                     a.style.display = 'none';
                                     tpage(tot, el, (page) => {
                                         if (a.style.display !== 'none') {
@@ -858,9 +858,13 @@
             f = f === 1 ? 2 : 1;
         }
 
+        let flag = 0;
         function drop(e) {
             e.preventDefault();
             e.stopPropagation();
+            if (!flag) {
+                return;
+            }
             let touches = e.touches[0];
             let svg = d;
             endX = sx - touches.clientX - Math.ceil(svg.offsetWidth / 2);
@@ -885,25 +889,22 @@
                 value.style.display = 'none';
             } else {
                 value.addEventListener('touchstart', ev => {
-                    startX = ev.touches[0].clientX - (value.offsetLeft ? value.offsetLeft : 0);
-                    startY = ev.touches[0].clientY - (value.offsetTop ? value.offsetTop : 0);
+                    startX = ev.touches[0].clientX - d.offsetLeft;
+                    startY = ev.touches[0].clientY - d.offsetLeft;
                     timer = setTimeout(() => {
-                        //value.style.touchAction='none';
                         value.style.fill = 'rgba(210,74,195,0.3)';
-                        value.addEventListener('touchmove', drop, {
-                            passive: false
-                        });
+                        flag = 1;
                     }, 600);
+                });
+                value.addEventListener('touchmove', drop, {
+                    passive: false
                 });
                 value.addEventListener('touchend', ev => {
                     clearTimeout(timer);
                     localStorage.setItem('tiebaPageX', endX);
                     localStorage.setItem('tiebaPageY', endY);
                     value.style.fill = 'rgba(77, 74, 210,.3)';
-                    //value.style.touchAction='default';
-                    //document.querySelector('body').style.touchAction=null;
-                    //console.log('end');
-                    value.removeEventListener('touchmove', drop);
+                    flag = 0;
                 })
             }
             value.style.fill = 'rgba(77, 74, 210,.3)';
@@ -941,9 +942,16 @@
         css.textContent = `
         .class_hide_flag{display:block!important;}.father-cut-pager-class-no-page>#list_pager{visibility: visible!important;height: 44px!important;}#glob,body{margin-top: 0px!important;}.father_cut_list_class{padding-bottom: 0px!important;}.father-cut-recommend-normal-box,.father-cut-daoliu-normal-box,.fixed_bar,.pb,.frs,.no_mean,.addbodybottom,.img_desc,.top-guide-wrap,.open-style,.index-feed-cards .hot-topic,.appPromote_wrapper,.ui_image_header_bottom,.videoFooter,#diversBanner,.tb-footer-wrap,.interest-bar,.footer-wrap,.client-btn,.daoliu{display:none!important;}.tl_shadow:not([data-tid]),#pblist>li:not([data-tid]){display:none!important;}.navbar-view{top:24px!important;}.navbar-box{top:44px!important;} 
         .footer_logo,.footer-version { display:none!important} 
-        .fr_list .list_item_floor  { padding-top:6px;}
-        .floor_footer_item .user_name { color:#125bc7; }
-        .floor_content a { color:#498bef; }     
+        .fr_list .list_item_floor  { padding-top: 8px;
+    letter-spacing: 1px;
+    border-radius: 8px;
+    margin-bottom: 2px
+    border: 1px solid rgba(0,0,0,.1);
+    box-shadow: 5px 5px 5px rgba(0,0,0,0.2);}
+        .floor_footer_item .user_name,.floor_footer_item .user_name:visited { color:#125bc7; }
+        .floor_content a,.floor_content a:visited { color:#498bef; } 
+        .fr_list .list_item_floor:nth-child(odd){ background-color:rgba(180, 228, 207, 0.2); }   
+        .fr_list .list_item_floor:nth-child(even){ background-color:rgba(168, 191, 157, 0.16); }   
         `;
         document.querySelector('head').append(css);
 
