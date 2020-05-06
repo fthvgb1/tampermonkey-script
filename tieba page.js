@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    https://github.com/fthvgb1/tampermonkey-script
-// @version      1.002
+// @version      1.003
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @match        https://tiebac.baidu.com/*
@@ -87,6 +87,7 @@
             call(x);
         }
         x.forEach(v => {
+            url(v);
             el.appendChild(v);
         });
 
@@ -250,6 +251,20 @@
         }
     }
 
+    function url(li) {
+        let as = li.querySelectorAll('a');
+        as.forEach(a => {
+            let src = a.href;
+            if (src.search(/(fr=share)|(client_type=2)/) > -1) {
+                let href = src.match(/(https?:\/\/tieba\.baidu\.com\/p\/\d*)\?.*/);
+                if (href.length > 0) {
+                    a.href = href[1];
+                    a.innerText = a.href;
+                }
+            }
+        })
+    }
+
     function t() {
         lz();
 
@@ -266,6 +281,7 @@
                     video.outerHTML = `<video poster="${img.src}" src="${src}" controls="controls"  style="max-width:100%;min-width:100%"></video>`;
                 });
             }
+            url(e);
             delElement(['#diversBanner', '.j_videoFootDownBtn']);
             gif(e);
             jpg(e);
@@ -348,21 +364,41 @@
     function lz() {
         let lz = document.querySelector('span.poster_only');
         if (lz) {
+            let r = document.createElement('span');
+            r.classList.add('poster_only');
+            r.style.marginLeft = '5px';
+            r.innerText = '倒序看帖';
+            lz.parentNode.insertBefore(r, lz);
+
             lz.onclick = null;
             let h = location.href;
             let ff = 0;
+            let rr = 0;
             if (h.indexOf('see_lz=1') > -1) {
                 lz.textContent = '取消只看楼主';
                 h = h.replace('see_lz=1', 'see_lz=0');
                 ff = 1;
             }
-            lz.addEventListener('click', () => {
+            if (h.indexOf('r=1') > -1) {
+                r.textContent = '取消倒序看帖';
+                h = h.replace('r=1', 'r=0');
+                rr = 1;
+            }
+
+            r.addEventListener('click', (e) => {
+                if (rr === 0) {
+                    h = h.indexOf('?') < 0 ? h + '?r=1' : (h[h.length - 1] === '&' ? (h + 'r=1&') : (h + '&r=1'));
+                }
+                location.href = h;
+                e.stopPropagation();
+            }, true);
+            lz.addEventListener('click', (e) => {
                 if (ff === 0) {
                     h = h.indexOf('?') < 0 ? h + '?see_lz=1' : h + '&see_lz=1';
                 }
                 location.href = h;
-
-            });
+                e.stopPropagation();
+            }, true);
         }
     }
 
