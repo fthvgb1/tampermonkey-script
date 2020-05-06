@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    https://github.com/fthvgb1/tampermonkey-script
-// @version      1.003
+// @version      1.004
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @match        https://tiebac.baidu.com/*
@@ -269,8 +269,8 @@
         lz();
 
         $("ul#pblist>li").forEach(function (e, iii) {
-            f(e);
-            if (iii === 0) {
+            let ff = f(e);
+            if (ff === 1) {
                 ab(e);
             }
             let videos = e.querySelectorAll('.video');
@@ -388,6 +388,7 @@
             r.addEventListener('click', (e) => {
                 if (rr === 0) {
                     h = h.indexOf('?') < 0 ? h + '?r=1' : (h[h.length - 1] === '&' ? (h + 'r=1&') : (h + '&r=1'));
+                    h = h.replace(/pn=\d+/, 'pn=' + (totalPage - 1) * 30);
                 }
                 location.href = h;
                 e.stopPropagation();
@@ -404,8 +405,9 @@
 
     function f(value) {
         let dt = JSON.parse(value.getAttribute('data-info'));
+        let fl = 0;
         if (dt) {
-            let fl = dt.floor_num;
+            fl = dt.floor_num;
             let l = document.createElement('span');
             l.style.color = 'green';
             l.textContent = fl + '楼';
@@ -418,6 +420,7 @@
             }
             value.querySelector('.list_item_time').parentNode.appendChild(l);
         }
+        return fl;
     }
 
     function check() {
@@ -578,10 +581,7 @@
                 a.classList.remove('tl_shadow_for_app');
             })
         }
-
         createTime();
-
-
         let list = document.querySelector('#tlist');
         let MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
         let observer = new MutationObserver((mutations) => {
@@ -842,17 +842,23 @@
         window.conxx = conf;
         window.xxLL = null;
 
+        let pa = document.querySelector('#list_pager');
+        pa.parentNode.removeChild(pa);
+        F.use('spb/widget/normal_post_list', function (threadList) {
+            if (!window.xxLL) {
+                window.xxLL = new threadList(conf)
+            }
+            window.totalPage = xxLL.pager._conf.totalPage;
+            if (location.href.indexOf('r=1') > -1) {
+                xxLL.pager._conf.url += '&r=1';
+            }
+        });
+
         document.querySelectorAll('.j_nreply_btn').forEach(value => {
             value.addEventListener('click', evt => {
                 evt.preventDefault();
                 evt.stopPropagation();
-                F.use('spb/widget/normal_post_list', function (threadList) {
-                    if (!window.xxLL) {
-                        window.xxLL = new threadList(conf)
-                    }
-                    window.xxLL.floorReply(evt);
-                });
-
+                window.xxLL.floorReply(evt);
             })
         })
     }
