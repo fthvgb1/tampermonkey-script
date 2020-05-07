@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    http://tampermonkey.net/
-// @version      1.004
+// @version      1.005
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @match        https://tiebac.baidu.com/*
@@ -256,8 +256,8 @@
         as.forEach(a => {
             let src = a.href;
             if (src.search(/(fr=share)|(client_type=2)/) > -1) {
-                let href = src.match(/(https?:\/\/tieba\.baidu\.com\/p\/\d*)\?.*/);
-                if (href.length > 0) {
+                let href = src.match(/(https?:\/\/tieba\.baidu\.com\/p\/\d+?)/);
+                if (href && href.length > 0) {
                     a.href = href[1];
                     a.innerText = a.href;
                 }
