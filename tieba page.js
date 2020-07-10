@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    http://tampermonkey.net/
-// @version      1.008
+// @version      1.009
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @match        https://tiebac.baidu.com/*
@@ -370,6 +370,7 @@
                 let tot = Math.ceil(orgnum / 10);
                 let el = a.previousElementSibling;
                 a.addEventListener('click', function () {
+
                     let that = this;
                     if (num === orgnum) {
                         let url = this.getAttribute('data-url');
@@ -385,23 +386,25 @@
                         if (GM_xmlhttpRequest) {
                             const tt = Math.ceil((new Date()).getTime());
                             url = `/p/comment?tid=${kz}&pid=${tid}&pn=1&t=${tt}`;
-                            gmPage(url, el, 1)
-                            num -= 8;
-                            that.innerText = `还有${num}条回复`;
-                            if (orgnum > 10) {
-                                a.style.display = 'none';
-                                tpage(tot, el, (page) => {
-                                    if (a.style.display !== 'none') {
-                                        a.style.display = 'none';
-                                    }
-                                    let tt = Math.ceil((new Date()).getTime());
-                                    let url = `/p/comment?tid=${kz}&pid=${tid}&pn=${page}&t=${tt}`;
-                                    gmPage(url, el, page, function () {
-                                        let l = lo(document, el);
-                                        window.scrollTo({top: l.top - 20, left: 0, behavior: "smooth"});
+                            gmPage(url, el, 1, () => {
+
+                                num -= 8;
+                                that.innerText = `还有${num}条回复`;
+                                if (orgnum > 10) {
+                                    a.style.display = 'none';
+                                    tpage(tot, el, (page) => {
+                                        if (a.style.display !== 'none') {
+                                            a.style.display = 'none';
+                                        }
+                                        let tt = Math.ceil((new Date()).getTime());
+                                        let url = `/p/comment?tid=${kz}&pid=${tid}&pn=${page}&t=${tt}`;
+                                        gmPage(url, el, page, function () {
+                                            let l = lo(document, el);
+                                            window.scrollTo({top: l.top - 20, left: 0, behavior: "smooth"});
+                                        });
                                     });
-                                });
-                            }
+                                }
+                            })
                         } else {
                             $.get(url, function (rst) {
                                 replayPage({data: {floor_html: rst}}, el, ls => {
@@ -432,23 +435,43 @@
 
 
                     } else {
-                        let url = `/mo/q//flr?fpn=${page}&kz=${kz}&pid=${tid}&is_ajax=1&has_url_param=0&template=lzl`;
-                        $.get(url, function (res) {
-                            replayPage(res, el);
-                            let i = el.parentNode.querySelector('.pagexx input');
-                            if (i) {
-                                i.dataset.r = `${page}`;
-                                i.type = 'text';
-                                i.value = page + '/' + tot;
-                            }
-                            ++page;
-                            if (num > 10) {
-                                num -= 10;
-                                that.innerText = `还有${num}条回复`;
-                            } else {
-                                that.parentNode.removeChild(that);
-                            }
-                        })
+                        if (GM_xmlhttpRequest) {
+                            const tt = Math.ceil((new Date()).getTime());
+                            url = `/p/comment?tid=${kz}&pid=${tid}&pn=${page}&t=${tt}`;
+                            gmPage(url, el, page, () => {
+                                let i = el.parentNode.querySelector('.pagexx input');
+                                if (i) {
+                                    i.dataset.r = `${page}`;
+                                    i.type = 'text';
+                                    i.value = page + '/' + tot;
+                                }
+                                ++page;
+                                if (num > 10) {
+                                    num -= 10;
+                                    that.innerText = `还有${num}条回复`;
+                                } else {
+                                    that.parentNode.removeChild(that);
+                                }
+                            })
+                        } else {
+                            let url = `/mo/q//flr?fpn=${page}&kz=${kz}&pid=${tid}&is_ajax=1&has_url_param=0&template=lzl`;
+                            $.get(url, function (res) {
+                                replayPage(res, el);
+                                let i = el.parentNode.querySelector('.pagexx input');
+                                if (i) {
+                                    i.dataset.r = `${page}`;
+                                    i.type = 'text';
+                                    i.value = page + '/' + tot;
+                                }
+                                ++page;
+                                if (num > 10) {
+                                    num -= 10;
+                                    that.innerText = `还有${num}条回复`;
+                                } else {
+                                    that.parentNode.removeChild(that);
+                                }
+                            })
+                        }
                     }
                 });
             }
