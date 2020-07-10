@@ -280,7 +280,7 @@
                 let tmp = lis.querySelectorAll('li');
                 let arr = [...tmp];
                 arr.splice(tmp.length - 1, 1);
-                if (page === 1 && el.length>0) {
+                if (page === 1 && el.length > 0) {
                     arr.splice(0, 2);
                 }
                 arr.forEach(li => {
@@ -297,7 +297,7 @@
                     let time = li.querySelector('.lzl_time').innerHTML;
                     let h = li.querySelector('a[class="at j_user_card "]');
 
-                    let he = `<a href="${h.href}" target="_blank" class="user_name">${h.getAttribute('username')+(h.innerText!==h.getAttribute('username')?'('+h.innerText+')':'')}</a>`;
+                    let he = `<a href="${h.href}" target="_blank" class="user_name">${h.getAttribute('username') + (h.innerText !== h.getAttribute('username') ? '(' + h.innerText + ')' : '')}</a>`;
                     let re = li.querySelector('.lzl_content_main');
 
                     let rrr = re.querySelector('.at');
@@ -373,7 +373,7 @@
                     let that = this;
                     if (num === orgnum) {
                         let url = this.getAttribute('data-url');
-                        if(num<=8){
+                        if (num <= 8) {
                             $.get(url, function (rst) {
                                 replayPage({data: {floor_html: rst}}, el, ls => {
                                     ls.splice(0, 2)
