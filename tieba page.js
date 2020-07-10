@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    http://tampermonkey.net/
-// @version      1.006
+// @version      1.007
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @match        https://tiebac.baidu.com/*
@@ -266,6 +266,67 @@
         })
     }
 
+    function gmPage(url, el, page, call) {
+        GM_xmlhttpRequest({
+            method: 'GET',
+            url: url,
+            headers: {
+                "User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36'
+            },
+            onload: function (res) {
+                let lis = (new DOMParser()).parseFromString(res.responseText, 'text/html');
+
+                let tmp = lis.querySelectorAll('li');
+                let arr = [...tmp];
+                arr.splice(tmp.length - 1, 1);
+                if (page === 1) {
+                    arr.splice(0, 2);
+                }
+                arr.forEach(li => {
+
+                    let o = JSON.parse(li.getAttribute('data-field'));
+                    let n = {
+                        pid: o.spid,
+                        un: o.user_name
+                    }
+                    let ell = document.createElement('li');
+                    ell.className = 'list_item_floor j_list_item_floor';
+                    ell.setAttribute('data-info', JSON.stringify(n))
+                    ell.setAttribute('pid', o.spid);
+                    let time = li.querySelector('.lzl_time').innerHTML;
+                    let h = li.querySelector('.j_user_card');
+                    let he = `<a href="${h.href}" class="user_name">${h.getAttribute('username')}</a>`;
+                    let re = li.querySelector('.lzl_content_main');
+                    if (!re) {
+                        debugger
+                    }
+                    let rrr = re.querySelector('.at');
+                    let rrrxx = '';
+                    if (rrr) {
+                        rrrxx += `回复 <a href="${rrr.href}">${rrr.innerText}</a> : `
+                        re.removeChild(rrr)
+                    }
+                    rrrxx += re.innerHTML
+                    ell.innerHTML = `
+                                    <div class="fmain j_floor_main">
+                                    <div class="floor_footer_item">
+                                    ${he}: <span style="color: #8fa391">${time}</span>
+                                    <span class="floor_content">
+                                    ${rrrxx}
+                                    </span>
+</div>
+</div>
+                                    `;
+                    el.append(ell)
+
+                })
+                if (call) {
+                    call()
+                }
+            }
+        });
+    }
+
     function t() {
         lz();
 
@@ -312,10 +373,11 @@
                     let that = this;
                     if (num === orgnum) {
                         let url = this.getAttribute('data-url');
-                        $.get(url, function (rst) {
-                            replayPage({data: {floor_html: rst}}, el, ls => {
-                                ls.splice(0, 2)
-                            });
+
+                        if (GM_xmlhttpRequest) {
+                            const tt = Math.ceil((new Date()).getTime());
+                            url = `/p/comment?tid=${kz}&pid=${tid}&pn=${page}&t=${tt}`;
+                            gmPage(url, el, 1)
                             if (num <= 8) {
                                 that.parentNode.removeChild(that);
                             } else {
@@ -327,16 +389,44 @@
                                         if (a.style.display !== 'none') {
                                             a.style.display = 'none';
                                         }
-                                        let url = `/mo/q//flr?fpn=${page}&kz=${kz}&pid=${tid}&is_ajax=1&has_url_param=0&template=lzl`;
-                                        $.get(url, res => {
-                                            replayPage(res, el);
+                                        let tt = Math.ceil((new Date()).getTime());
+                                        let url = `/p/comment?tid=${kz}&pid=${tid}&pn=${page}&t=${tt}`;
+                                        gmPage(url, el, page, function () {
                                             let l = lo(document, el);
                                             window.scrollTo({top: l.top - 20, left: 0, behavior: "smooth"});
-                                        })
+                                        });
                                     });
                                 }
                             }
-                        });
+                        } else {
+                            $.get(url, function (rst) {
+                                replayPage({data: {floor_html: rst}}, el, ls => {
+                                    ls.splice(0, 2)
+                                });
+                                if (num <= 8) {
+                                    that.parentNode.removeChild(that);
+                                } else {
+                                    num -= 8;
+                                    that.innerText = `还有${num}条回复`;
+                                    if (orgnum > 18) {
+                                        a.style.display = 'none';
+                                        tpage(tot, el, (page) => {
+                                            if (a.style.display !== 'none') {
+                                                a.style.display = 'none';
+                                            }
+                                            let url = `/mo/q//flr?fpn=${page}&kz=${kz}&pid=${tid}&is_ajax=1&has_url_param=0&template=lzl`;
+                                            $.get(url, res => {
+                                                replayPage(res, el);
+                                                let l = lo(document, el);
+                                                window.scrollTo({top: l.top - 20, left: 0, behavior: "smooth"});
+                                            })
+                                        });
+                                    }
+                                }
+                            });
+                        }
+
+
                     } else {
                         let url = `/mo/q//flr?fpn=${page}&kz=${kz}&pid=${tid}&is_ajax=1&has_url_param=0&template=lzl`;
                         $.get(url, function (res) {
