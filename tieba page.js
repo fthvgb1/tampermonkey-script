@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    http://tampermonkey.net/
-// @version      1.007
+// @version      1.008
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @match        https://tiebac.baidu.com/*
@@ -14,6 +14,7 @@
 
 (function () {
     'use strict';
+
     function jpg(v) {
         let fimgs = v.querySelectorAll('span[class="wrap pbimgwapper"]>img.BDE_Image');
         if (fimgs.length > 0) {
@@ -279,7 +280,7 @@
                 let tmp = lis.querySelectorAll('li');
                 let arr = [...tmp];
                 arr.splice(tmp.length - 1, 1);
-                if (page === 1) {
+                if (page === 1 && el.length>0) {
                     arr.splice(0, 2);
                 }
                 arr.forEach(li => {
@@ -294,12 +295,11 @@
                     ell.setAttribute('data-info', JSON.stringify(n))
                     ell.setAttribute('pid', o.spid);
                     let time = li.querySelector('.lzl_time').innerHTML;
-                    let h = li.querySelector('.j_user_card');
-                    let he = `<a href="${h.href}" class="user_name">${h.getAttribute('username')}</a>`;
+                    let h = li.querySelector('a[class="at j_user_card "]');
+
+                    let he = `<a href="${h.href}" target="_blank" class="user_name">${h.getAttribute('username')+(h.innerText!==h.getAttribute('username')?'('+h.innerText+')':'')}</a>`;
                     let re = li.querySelector('.lzl_content_main');
-                    if (!re) {
-                        debugger
-                    }
+
                     let rrr = re.querySelector('.at');
                     let rrrxx = '';
                     if (rrr) {
@@ -373,30 +373,34 @@
                     let that = this;
                     if (num === orgnum) {
                         let url = this.getAttribute('data-url');
-
+                        if(num<=8){
+                            $.get(url, function (rst) {
+                                replayPage({data: {floor_html: rst}}, el, ls => {
+                                    ls.splice(0, 2)
+                                    that.parentNode.removeChild(that);
+                                });
+                            });
+                            return
+                        }
                         if (GM_xmlhttpRequest) {
                             const tt = Math.ceil((new Date()).getTime());
-                            url = `/p/comment?tid=${kz}&pid=${tid}&pn=${page}&t=${tt}`;
+                            url = `/p/comment?tid=${kz}&pid=${tid}&pn=1&t=${tt}`;
                             gmPage(url, el, 1)
-                            if (num <= 8) {
-                                that.parentNode.removeChild(that);
-                            } else {
-                                num -= 8;
-                                that.innerText = `还有${num}条回复`;
-                                if (orgnum > 18) {
-                                    a.style.display = 'none';
-                                    tpage(tot, el, (page) => {
-                                        if (a.style.display !== 'none') {
-                                            a.style.display = 'none';
-                                        }
-                                        let tt = Math.ceil((new Date()).getTime());
-                                        let url = `/p/comment?tid=${kz}&pid=${tid}&pn=${page}&t=${tt}`;
-                                        gmPage(url, el, page, function () {
-                                            let l = lo(document, el);
-                                            window.scrollTo({top: l.top - 20, left: 0, behavior: "smooth"});
-                                        });
+                            num -= 8;
+                            that.innerText = `还有${num}条回复`;
+                            if (orgnum > 10) {
+                                a.style.display = 'none';
+                                tpage(tot, el, (page) => {
+                                    if (a.style.display !== 'none') {
+                                        a.style.display = 'none';
+                                    }
+                                    let tt = Math.ceil((new Date()).getTime());
+                                    let url = `/p/comment?tid=${kz}&pid=${tid}&pn=${page}&t=${tt}`;
+                                    gmPage(url, el, page, function () {
+                                        let l = lo(document, el);
+                                        window.scrollTo({top: l.top - 20, left: 0, behavior: "smooth"});
                                     });
-                                }
+                                });
                             }
                         } else {
                             $.get(url, function (rst) {
@@ -974,6 +978,7 @@
         }
 
         let flag = 0;
+
         function drop(e) {
             e.preventDefault();
             e.stopPropagation();
