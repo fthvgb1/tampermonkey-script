@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    http://tampermonkey.net/
-// @version      1.009
+// @version      1.010
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @match        https://tiebac.baidu.com/*
@@ -280,7 +280,7 @@
                 let tmp = lis.querySelectorAll('li');
                 let arr = [...tmp];
                 arr.splice(tmp.length - 1, 1);
-                if (page === 1 && el.length > 0) {
+                if (page === 1 && el.childElementCount > 0) {
                     arr.splice(0, 2);
                 }
                 arr.forEach(li => {
