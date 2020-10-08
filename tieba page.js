@@ -340,7 +340,17 @@
                 videos.forEach(video => {
                     let src = video.getAttribute('data-vhsrc');
                     let img = video.querySelector('img');
-                    video.outerHTML = `<video poster="${img.src}" src="${src}" controls="controls"  style="max-width:100%;min-width:100%"></video>`;
+                    let hr = video.getAttribute('data-vsrc');
+                    if (src) {
+                        video.outerHTML = `<video poster="${img.src}" src="${src}" controls="controls"  style="max-width:100%;min-width:100%"></video>`;
+                    } else if (hr && hr.indexOf('youku.com') > -1) {
+                        let r = hr.split('id_')[1].replace('.html', '')
+                        video.outerHTML = `<iframe  src='https://player.youku.com/embed/${r}' frameborder=0 'allowfullscreen'></iframe>`
+
+                    } else {
+
+                    }
+
                 });
             }
             url(e);
