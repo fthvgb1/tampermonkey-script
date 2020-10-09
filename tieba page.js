@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    http://tampermonkey.net/
-// @version      1.010
+// @version      1.011
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @match        https://tiebac.baidu.com/*
@@ -82,6 +82,7 @@
             ll.classList.add('j_list_item_floor');
             ll.innerHTML = div;
             ll.setAttribute('data-info', li.dataset.info);
+            llxx(ll)
             x.push(ll);
         });
         if (call) {
@@ -317,6 +318,8 @@
 </div>
 </div>
                                     `;
+
+                    llxx(ell)
                     el.append(ell)
 
                 })
@@ -327,12 +330,58 @@
         });
     }
 
+    function llxx(li) {
+        let info = JSON.parse(li.dataset.info);
+        if (!window.lz) {
+            lzl();
+        }
+        let rep = li.querySelector('a.user_name');
+        let xx = rep.innerHTML;
+        if (':' === xx[xx.length - 1]) {
+            xx = xx.substring(0, xx.length - 1)
+        }
+
+        let x = ''
+        let i = `&nbsp;<span style="text-align: center;
+    background: #3381e3;
+    color: #fff;
+    padding: 0 4px;
+    margin: 0 4px 0 0;
+    border-radius: 2px;
+    vertical-align: middle;
+    ">楼主</span>`
+        let y = ':'
+        if (window.lz.un === info.un) {
+            x = i
+        }
+        rep.outerHTML = `<a href="/home/main?un=${info.un}" class="user_name">${xx}</a>` + x + y;
+        let c = li.querySelector('.floor_content a[href*="/home/main?un="]')
+        if (c) {
+            let un = c.href.split('un=')[1];
+            un = decodeURI(un);
+            if (window.lz.un === un) {
+                c.outerHTML += `&nbsp;<span style="text-align: center;
+    background: #3381e3;
+    color: #fff;
+    padding: 0 4px;
+    margin: 0 4px 0 0;
+    border-radius: 2px;
+    vertical-align: middle;
+    font-size: 10px;
+    ">楼主</span>`
+            }
+        }
+    }
+
     function t() {
         lz();
 
         $("ul#pblist>li").forEach(function (e, iii) {
             let ff = f(e);
             if (ff === 1) {
+                if (!window.lz) {
+                    window.lz = JSON.parse(e.dataset.info)
+                }
                 ab(e);
             }
             let videos = e.querySelectorAll('.video');
@@ -341,14 +390,19 @@
                     let src = video.getAttribute('data-vhsrc');
                     let img = video.querySelector('img');
                     let hr = video.getAttribute('data-vsrc');
+
                     if (src) {
                         video.outerHTML = `<video poster="${img.src}" src="${src}" controls="controls"  style="max-width:100%;min-width:100%"></video>`;
+                    } else if (hr && hr.indexOf('bilibili.com') > -1) {
+                        let av = hr.match(/av(\d+)/)[1]
+                        video.outerHTML = `<iframe src="//player.bilibili.com/player.html?aid=${av}&page=1"  allowfullscreen="true"> </iframe>`
+
                     } else if (hr && hr.indexOf('youku.com') > -1) {
                         let r = hr.split('id_')[1].replace('.html', '')
                         video.outerHTML = `<iframe  src='https://player.youku.com/embed/${r}' frameborder=0 'allowfullscreen'></iframe>`
 
-                    } else {
-
+                    } else if (hr && hr.indexOf('tudou.com') > -1) {
+                        // 土豆已死，有事请烧纸 悲伤的故事 .........
                     }
 
                 });
@@ -365,6 +419,14 @@
                 kz = x[0].href.match(/tid=(\d+)&/);
                 kz = kz[1];
             }
+            let lzll = e.querySelector('.flist');
+            if (lzll) {
+                [...lzll.children].forEach(li => {
+
+                    llxx(li)
+                })
+            }
+
             let floor = e.getElementsByClassName('pb_floow_load');
             if (floor.length > 0) {
                 let a = floor[0];
@@ -616,6 +678,10 @@
             url = url.replace('mo/q/m', 'f').replace(/word=(.*?)&/, 'kw=' + word + '&');
 
         }
+        if (url.indexOf('lp=sfrs_good_area_link') > -1) {
+            url += 'tab=good&'
+        }
+        //debugger
         GM_xmlhttpRequest({
             method: 'GET',
             url: url,
@@ -769,6 +835,22 @@
         })).observe(document.querySelector('#po_list'), {
             childList: true,
         });
+
+    }
+
+    function lzl() {
+        let kz = document.querySelector('html').innerHTML.match(/kz: "(\d+)"/)[1];
+        let url = `/p/${kz}`;
+        $.ajax({
+            url: url,
+            async: false,
+            type: 'get',
+            success: (res) => {
+                let html = (new DOMParser()).parseFromString(res, 'text/html');
+                let lz = html.querySelector('#pblist li')
+                window.lz = JSON.parse(lz.dataset.info)
+            }
+        })
 
     }
 
