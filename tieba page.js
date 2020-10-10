@@ -332,6 +332,7 @@
     }
 
     function llxx(li) {
+
         let info = JSON.parse(li.dataset.info);
         if (!window.lz) {
             lzl();
@@ -352,7 +353,7 @@
     vertical-align: middle;
     ">楼主</span>`
         let y = ':'
-        if (window.lz.un === info.un) {
+        if (window.lz.un === info.un || window.lz.name_show === info.un) {
             x = i
         }
         rep.outerHTML = `<a href="/home/main?un=${info.un}" class="user_name">${xx}</a>` + x + y;
@@ -364,10 +365,11 @@
             }
         }
 
+
         if (c) {
             let un = c.href.split('un=')[1];
             un = decodeURI(un);
-            if (window.lz.un === un) {
+            if (window.lz.un === un || window.lz.name_show === un) {
                 c.outerHTML += `&nbsp;<span style="text-align: center;
     background: #3381e3;
     color: #fff;
