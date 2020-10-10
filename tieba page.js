@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    http://tampermonkey.net/
-// @version      1.012
+// @version      1.013
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @match        https://tiebac.baidu.com/*
@@ -357,6 +357,13 @@
         }
         rep.outerHTML = `<a href="/home/main?un=${info.un}" class="user_name">${xx}</a>` + x + y;
         let c = li.querySelector('.floor_content a[href*="/home/main?un="]')
+        if (!c) {
+            c = li.querySelector('.floor_content a[href*="jump?un="]');
+            if (c) {
+                c.href = '/home/main?un=' + c.innerText
+            }
+        }
+
         if (c) {
             let un = c.href.split('un=')[1];
             un = decodeURI(un);
