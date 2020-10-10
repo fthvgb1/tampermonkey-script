@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    http://tampermonkey.net/
-// @version      1.016
+// @version      1.017
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @match        https://tiebac.baidu.com/*
@@ -403,7 +403,7 @@
 
                     } else if (hr && hr.indexOf('youku.com') > -1) {
                         let r = hr.split('id_')[1].replace('.html', '')
-                        video.outerHTML = `<iframe  src='https://player.youku.com/embed/${r}' frameborder=0 'allowfullscreen'></iframe>`
+                        video.outerHTML = `<iframe  src='https://player.youku.com/embed/${r}' frameborder=0 allowfullscreen="true"></iframe>`
 
                     } else if (hr && hr.indexOf('tudou.com') > -1) {
                         // 土豆已死，有事请烧纸 悲伤的故事 .........
