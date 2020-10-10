@@ -65,7 +65,7 @@
             let ct = li.querySelector('.user_name + p').innerText;
             let info = JSON.parse(li.dataset.info);
             let username = uuu.outerHTML;
-            username = username.replace('</a>', `</a> : <span style="color: #8fa391">${ct}</span>`).replace('javascript:;', `/home/main?un=${info.un}`);
+            username = username.replace('</a>', `</a>  <span style="color: #8fa391">${ct}</span>`).replace('javascript:;', `/home/main?un=${info.un}`);
             let s = li.querySelector('.content span');
             s.className = 'floor_content';
             let c = li.querySelector('.content').innerHTML;
@@ -307,11 +307,12 @@
                         rrrxx += `回复 <a href="${rrr.href}">${rrr.innerText}</a> : `
                         re.removeChild(rrr)
                     }
-                    rrrxx += re.innerHTML
+
+                    rrrxx += re.innerHTML.replace('回复', '').replace(':', '')
                     ell.innerHTML = `
                                     <div class="fmain j_floor_main">
                                     <div class="floor_footer_item">
-                                    ${he}: <span style="color: #8fa391">${time}</span>
+                                    ${he} <span style="color: #8fa391">${time}</span>
                                     <span class="floor_content">
                                     ${rrrxx}
                                     </span>
@@ -367,7 +368,7 @@
     margin: 0 4px 0 0;
     border-radius: 2px;
     vertical-align: middle;
-    font-size: 10px;
+    font-size: 14px;
     ">楼主</span>`
             }
         }
