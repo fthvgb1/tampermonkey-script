@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    http://tampermonkey.net/
-// @version      1.017
+// @version      1.018
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @match        https://tiebac.baidu.com/*
@@ -307,8 +307,14 @@
                         rrrxx += `回复 <a href="${rrr.href}">${rrr.innerText}</a> : `
                         re.removeChild(rrr)
                     }
+                    let ly = re.innerHTML.trim();
 
-                    rrrxx += re.innerHTML.replace('回复', '').replace(':', '')
+                    if (ly.indexOf('回复') === 0) {
+                        rrrxx += re.innerHTML.replace('回复', '').replace(':', '');
+                    } else {
+                        rrrxx += re.innerHTML;
+                    }
+
                     ell.innerHTML = `
                                     <div class="fmain j_floor_main">
                                     <div class="floor_footer_item">
