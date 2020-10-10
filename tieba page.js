@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    http://tampermonkey.net/
-// @version      1.015
+// @version      1.016
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @match        https://tiebac.baidu.com/*
@@ -379,6 +379,7 @@
     function t() {
         lz();
 
+
         $("ul#pblist>li").forEach(function (e, iii) {
             let ff = f(e);
             if (ff === 1) {
@@ -552,6 +553,7 @@
             }
 
         });
+        killCheckUrl();
     }
 
     function lz() {
@@ -855,6 +857,15 @@
             }
         })
 
+    }
+
+    function killCheckUrl() {
+        let urls = document.querySelectorAll('a[href*="/mo/q/checkurl"]');
+        [...urls].forEach(a => {
+            const url = decodeURIComponent(a.href).split('url=')[1]
+            a.href = url;
+            a.target = '_blank';
+        })
     }
 
     function detail() {
