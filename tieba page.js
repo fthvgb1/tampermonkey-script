@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         tieba page
 // @namespace    http://tampermonkey.net/
-// @version      1.014
+// @version      1.015
 // @author       fthvgb1
 // @match        https://tieba.baidu.com/*
 // @match        https://tiebac.baidu.com/*
@@ -351,6 +351,7 @@
     margin: 0 4px 0 0;
     border-radius: 2px;
     vertical-align: middle;
+    font-size: 14px;
     ">楼主</span>`
         let y = ':'
         if (window.lz.un === info.un || window.lz.name_show === info.un) {
@@ -370,15 +371,7 @@
             let un = c.href.split('un=')[1];
             un = decodeURI(un);
             if (window.lz.un === un || window.lz.name_show === un) {
-                c.outerHTML += `&nbsp;<span style="text-align: center;
-    background: #3381e3;
-    color: #fff;
-    padding: 0 4px;
-    margin: 0 4px 0 0;
-    border-radius: 2px;
-    vertical-align: middle;
-    font-size: 14px;
-    ">楼主</span>`
+                c.outerHTML += i
             }
         }
     }
